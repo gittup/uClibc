@@ -3,8 +3,6 @@
 # see extra/config/Kconfig-language.txt
 #
 
-mainmenu "uClibc C Library Configuration"
-
 choice
 	prompt "Target Architecture"
 	help
