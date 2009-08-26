@@ -1,0 +1,9 @@
+include_rules
+
+ifeq (@(UCLIBC_HAS_REGEX_OLD),y)
+obj-y += regex_old.c
+else
+obj-y += regex.c
+endif
+
+: foreach $(obj-y) | $(compiler_proper) $(uclibc_headers) |> ^ CC %f^ $(CC) -c %f -o %o $(CFLAGS) $(CFLAGS_%e) |> %B.o

@@ -1,0 +1,23 @@
+include_rules
+
+# TODO: i386 only sigaction.c is in libc/sysdeps/linux/i386
+# obj-y += sigaction.c
+obj-y += allocrtsig.c killpg.c raise.c sigaddset.c sigandset.c
+obj-y += sigblock.c sigdelset.c sigempty.c sigfillset.c siggetmask.c
+obj-y += sigisempty.c sigismem.c sigjmp.c signal.c
+obj-y += sigorset.c sigpause.c sigsetmask.c sigsetops.c sigwait.c
+obj-@(UCLIBC_HAS_OBSOLETE_BSD_SIGNAL) += sighold.c
+obj-@(UCLIBC_HAS_OBSOLETE_BSD_SIGNAL) += sigignore.c
+obj-@(UCLIBC_HAS_OBSOLETE_BSD_SIGNAL) += sigrelse.c
+obj-@(UCLIBC_HAS_OBSOLETE_BSD_SIGNAL) += sigset.c
+obj-@(UCLIBC_HAS_OBSOLETE_SYSV_SIGNAL) += sysv_signal.c
+obj-@(UCLIBC_SUSV4_LEGACY) += sigintr.c
+
+# TODO: from libc/sysdeps/linux/Makefile.commonarch?
+#ifneq ($(strip $(ARCH_OBJS)),)
+#CSRC := $(filter-out $(notdir $(ARCH_OBJS:.o=.c)),$(CSRC))
+#endif
+
+CFLAGS += $(UCLIBC_LINUX_INCLUDES)
+
+: foreach $(obj-y) | $(compiler_proper) $(uclibc_headers) |> ^ CC %f^ $(CC) -c %f -o %o $(CFLAGS) $(CFLAGS_%e) |> %B.o

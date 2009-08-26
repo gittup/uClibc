@@ -1,0 +1,61 @@
+include_rules
+
+obj-y += abort.c getenv.c mkdtemp.c realpath.c mkstemp.c
+obj-y += rand.c random.c random_r.c setenv.c system.c div.c ldiv.c lldiv.c
+obj-y += getpt.c drand48-iter.c jrand48.c
+obj-y += jrand48_r.c lrand48.c lrand48_r.c mrand48.c mrand48_r.c nrand48.c
+obj-y += nrand48_r.c rand_r.c srand48.c srand48_r.c seed48.c seed48_r.c
+obj-y += valloc.c a64l.c l64a.c __uc_malloc.c
+obj-@(UCLIBC_HAS_ADVANCED_REALTIME) += posix_memalign.c
+obj-@(UCLIBC_HAS_PTY) += grantpt.c unlockpt.c ptsname.c
+obj-@(UCLIBC_HAS_ARC4RANDOM) += arc4random.c
+obj-@(UCLIBC_HAS_LFS) += mkstemp64.c
+ifeq (@(UCLIBC_HAS_FLOATS),y)
+	obj-y += drand48.c drand48_r.c erand48.c erand48_r.c
+	obj-@(UCLIBC_SUSV3_LEGACY) += gcvt.c mktemp.c
+endif
+
+# multi source stdlib.c
+obj-y += abs.c labs.c atoi.c atol.c strtol.c strtoul.c _stdlib_strto_l.c
+obj-y += qsort.c bsearch.c
+obj-y += llabs.c atoll.c strtoll.c strtoull.c _stdlib_strto_ll.c
+
+# (aliases) strtoq.o strtouq.o
+obj-@(UCLIBC_HAS_FLOATS) += atof.c
+obj-@(UCLIBC_HAS_XLOCALE) += strtol_l.c strtoul_l.c _stdlib_strto_l_l.c
+obj-@(UCLIBC_HAS_XLOCALE) += strtoll_l.c strtoull_l.c _stdlib_strto_ll_l.c
+ifeq (@(UCLIBC_HAS_WCHAR),y)
+	obj-y += mblen.c mbtowc.c wctomb.c mbstowcs.c wcstombs.c
+	obj-y += _stdlib_mb_cur_max.c _stdlib_wcsto_l.c _stdlib_wcsto_ll.c
+	obj-y += wcstol.c wcstoul.c wcstoll.c wcstoull.c
+	obj-@(UCLIBC_HAS_XLOCALE) += _stdlib_wcsto_l_l.c _stdlib_wcsto_ll_l.c
+	obj-@(UCLIBC_HAS_XLOCALE) += wcstol_l.c wcstoul_l.c wcstoll_l.c
+	obj-@(UCLIBC_HAS_XLOCALE) += wcstoull_l.c
+endif
+
+# multi source _strtod.c
+ifeq (@(UCLIBC_HAS_FLOATS),y)
+	obj-y += strtod.c strtof.c strtold.c __strtofpmax.c __fp_range_check.c
+	obj-@(UCLIBC_HAS_XLOCALE) += strtod_l.c strtof_l.c strtold_l.c
+	obj-@(UCLIBC_HAS_XLOCALE) += __strtofpmax_l.c
+endif
+
+# TODO: nested if with above
+ifeq (@(UCLIBC_HAS_FLOATS)@(UCLIBC_HAS_WCHAR),yy)
+	obj-y += wcstod.c wcstof.c wcstold.c __wcstofpmax.c
+	obj-@(UCLIBC_HAS_XLOCALE) += wcstod_l.c wcstof_l.c wcstold_l.c
+	obj-@(UCLIBC_HAS_XLOCALE) += __wcstofpmax_l.c
+endif
+
+# (aliases) wcstoq.o wcstouq.o
+# wcstod wcstof wcstold
+
+# multi source _atexit.c
+obj-y += __cxa_atexit.c __cxa_finalize.c __exit_handler.c exit.c on_exit.c
+obj-@(COMPAT_ATEXIT) += old_atexit.c
+
+obj-y += atexit.c
+
+CFLAGS += $(UCLIBC_LINUX_INCLUDES)
+
+: foreach $(obj-y) | $(compiler_proper) $(uclibc_headers) |> ^ CC %f^ $(CC) -c %f -o %o $(CFLAGS) $(CFLAGS_%e) |> %B.o

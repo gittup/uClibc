@@ -1,0 +1,34 @@
+include_rules
+
+obj-y += __getgrouplist_internal.c
+obj-y += __parsegrent.c
+obj-y += __parsepwent.c
+obj-y += __pgsreader.c
+obj-y += fgetgrent.c
+obj-y += fgetgrent_r.c
+obj-y += fgetpwent.c
+obj-y += fgetpwent_r.c
+obj-y += getgrent.c
+obj-y += getgrent_r.c
+obj-y += getgrgid.c
+obj-y += getgrgid_r.c
+obj-y += getgrnam.c
+obj-y += getgrnam_r.c
+obj-y += getgrouplist.c
+obj-y += getpw.c
+obj-y += getpwent.c
+obj-y += getpwent_r.c
+obj-y += getpwnam.c
+obj-y += getpwnam_r.c
+obj-y += getpwuid.c
+obj-y += getpwuid_r.c
+obj-y += initgroups.c
+obj-y += putgrent.c
+obj-y += putpwent.c
+obj-@(UCLIBC_HAS_SHADOW) += fgetspent_r.c fgetspent.c getspent_r.c getspent.c
+obj-@(UCLIBC_HAS_SHADOW) += getspnam_r.c getspnam.c lckpwdf.c putspent.c
+obj-@(UCLIBC_HAS_SHADOW) += sgetspent_r.c sgetspent.c __parsespent.c
+
+CFLAGS += $(UCLIBC_LINUX_INCLUDES)
+
+: foreach $(obj-y) | $(compiler_proper) $(uclibc_headers) |> ^ CC %f^ $(CC) -c %f -o %o $(CFLAGS) $(CFLAGS_%e) |> %B.o

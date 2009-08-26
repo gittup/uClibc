@@ -1,0 +1,11 @@
+include_rules
+
+obj-y += tempname.c
+obj-y += errno.c
+obj-y += __errno_location.c
+obj-y += __h_errno_location.c
+obj-y += __uClibc_main.c
+
+CFLAGS += $(UCLIBC_LINUX_INCLUDES)
+
+: foreach $(obj-y) | $(compiler_proper) $(uclibc_headers) |> ^ CC %f^ $(CC) -c %f -o %o $(CFLAGS) $(CFLAGS_%e) |> %B.o

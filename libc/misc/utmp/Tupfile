@@ -1,0 +1,7 @@
+include_rules
+
+obj-y += utent.c wtent.c
+
+CFLAGS += $(UCLIBC_LINUX_INCLUDES)
+
+: foreach $(obj-y) | $(compiler_proper) $(uclibc_headers) |> ^ CC %f^ $(CC) -c %f -o %o $(CFLAGS) $(CFLAGS_%e) |> %B.o

@@ -1,0 +1,14 @@
+include_rules
+
+obj-y += dl-support.c dl-core.c dl-iterate-phdr.c
+
+CFLAGS_dl-iterate-phdr.c += -D_GNU_SOURCE
+CFLAGS_dl-iterate-phdr.c += -I$(UCLIBC_ROOT)/ldso/ldso/@(TARGET_ARCH)
+CFLAGS_dl-iterate-phdr.c += -I$(UCLIBC_ROOT)/ldso/include
+
+CFLAGS_dl-core.c += -I$(UCLIBC_ROOT)/ldso/ldso/@(TARGET_ARCH)
+CFLAGS_dl-core.c += -I$(UCLIBC_ROOT)/ldso/include
+
+CFLAGS += $(UCLIBC_LINUX_INCLUDES)
+
+: foreach $(obj-y) | $(compiler_proper) $(uclibc_headers) |> ^ CC %f^ $(CC) -c %f -o %o $(CFLAGS) $(CFLAGS_%e) $(CFLAGS_%f) |> %B.o

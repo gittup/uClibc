@@ -1,0 +1,13 @@
+include_rules
+
+ifeq (@(UCLIBC_HAS_WCHAR),y)
+	obj-y += btowc.c wctob.c mbsinit.c mbrlen.c mbrtowc.c wcrtomb.c
+	obj-y += mbsrtowcs.c wcsrtombs.c _wchar_utf8sntowcs.c
+	obj-y += _wchar_wcsntoutf8s.c mbsnrtowcs.c wcsnrtombs.c wcwidth.c
+	obj-y += wcswidth.c
+	obj-@(UCLIBC_HAS_LOCALE) += iconv.c
+
+	CFLAGS += $(UCLIBC_LINUX_INCLUDES)
+endif
+
+: foreach $(obj-y) | $(compiler_proper) $(uclibc_headers) |> ^ CC %f^ $(CC) -c %f -o %o $(CFLAGS) $(CFLAGS_%e) |> %B.o

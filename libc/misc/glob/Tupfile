@@ -1,0 +1,13 @@
+include_rules
+
+ifeq ($(UCLIBC_HAS_GNU_GLOB),y)
+	obj-y += glob.c
+	obj-@(UCLIBC_HAS_LFS) += glob64.c
+else
+	obj-y += glob-susv3.c
+	obj-@(UCLIBC_HAS_LFS) += glob64-susv3.c
+endif
+
+CFLAGS += $(UCLIBC_LINUX_INCLUDES)
+
+: foreach $(obj-y) | $(compiler_proper) $(uclibc_headers) |> ^ CC %f^ $(CC) -c %f -o %o $(CFLAGS) $(CFLAGS_%e) |> %B.o

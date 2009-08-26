@@ -1,0 +1,12 @@
+include_rules
+
+CFLAGS += -fPIC
+CFLAGS += -DSHARED
+CFLAGS += -DNOT_IN_libc
+CFLAGS += -DIS_IN_rtld
+CFLAGS += -I../include
+CFLAGS += -Ii386
+CFLAGS += $(UCLIBC_LINUX_INCLUDES)
+
+: foreach ldso.c i386/resolve.S | $(compiler_proper) $(uclibc_headers) |> ^ CC %f^ $(CC) -c %f -o %o $(CFLAGS) $(CFLAGS_%e) -DUCLIBC_RUNTIME_PREFIX='"/usr/i386-linux-uclibc/"' -DUCLIBC_LDSO=\"ld-uClibc.so.0\" -DLDSO_ELFINTERP=\"i386/elfinterp.c\" |> %B.o {objs}
+: {objs} | $(archiver) |> ^ AR %o^ $(AR) rcs %o %f |> ld-uClibc_so.a

@@ -1,0 +1,125 @@
+include_rules
+
+#
+# Arch specific fun
+#
+# Collect the subarch specific implementation (asm files)
+# TODO
+#ifneq ($(strip $(TARGET_SUBARCH)),)
+#STRING_SUBARCH_DIR := $(top_srcdir)libc/string/$(TARGET_ARCH)/$(TARGET_SUBARCH)
+#STRING_SUBARCH_OUT := $(top_builddir)libc/string/$(TARGET_ARCH)/$(TARGET_SUBARCH)
+#
+#STRING_SUBARCH_SSRC := $(wildcard $(STRING_SUBARCH_OUT)/*.S)
+#STRING_SUBARCH_SOBJ := $(patsubst $(STRING_SUBARCH_DIR)/%.S,$(STRING_SUBARCH_OUT)/%.o,$(STRING_SUBARCH_SSRC))
+#
+#STRING_SUBARCH_OBJS := $(STRING_SUBARCH_SOBJ)
+#endif
+
+obj-@(UCLIBC_HAS_STRING_ARCH_OPT) += @(TARGET_ARCH)/*.c
+# TODO: This part is i386 specific
+obj-@(UCLIBC_HAS_STRING_GENERIC_OPT) += generic/memcmp.c
+obj-@(UCLIBC_HAS_STRING_GENERIC_OPT) += generic/memmem.c
+obj-@(UCLIBC_HAS_STRING_GENERIC_OPT) += generic/mempcpy.c
+obj-@(UCLIBC_HAS_STRING_GENERIC_OPT) += generic/memrchr.c
+obj-@(UCLIBC_HAS_STRING_GENERIC_OPT) += generic/strcspn.c
+obj-@(UCLIBC_HAS_STRING_GENERIC_OPT) += generic/strsep.c
+obj-@(UCLIBC_HAS_STRING_GENERIC_OPT) += generic/strspn.c
+obj-@(UCLIBC_HAS_STRING_GENERIC_OPT) += generic/strstr.c
+obj-@(UCLIBC_HAS_STRING_GENERIC_OPT) += generic/strtok_r.c
+
+ifeq (@(UCLIBC_HAS_LOCALE),y)
+	obj-@(UCLIBC_HAS_WCHAR) += wcsxfrm_l.c
+	obj-@(UCLIBC_HAS_XLOCALE) += strxfrm_l.c
+	obj-@(UCLIBC_HAS_WCHAR) += wcsxfrm.c
+endif
+obj-@(UCLIBC_HAS_WCHAR) += wcscasecmp_l.c wcsncasecmp_l.c
+obj-@(UCLIBC_HAS_XLOCALE) += strcasecmp_l.c strncasecmp_l.c
+
+obj-@(UCLIBC_HAS_WCHAR) += wcpcpy.c
+obj-@(UCLIBC_HAS_WCHAR) += wcpncpy.c
+obj-@(UCLIBC_HAS_WCHAR) += wcscasecmp.c
+obj-@(UCLIBC_HAS_WCHAR) += wcscat.c
+obj-@(UCLIBC_HAS_WCHAR) += wcschr.c
+obj-@(UCLIBC_HAS_WCHAR) += wcschrnul.c
+obj-@(UCLIBC_HAS_WCHAR) += wcscmp.c
+obj-@(UCLIBC_HAS_WCHAR) += wcscpy.c
+obj-@(UCLIBC_HAS_WCHAR) += wcscspn.c
+obj-@(UCLIBC_HAS_WCHAR) += wcsdup.c
+obj-@(UCLIBC_HAS_WCHAR) += wcslcpy.c
+obj-@(UCLIBC_HAS_WCHAR) += wcslen.c
+obj-@(UCLIBC_HAS_WCHAR) += wcsncasecmp.c
+obj-@(UCLIBC_HAS_WCHAR) += wcsncat.c
+obj-@(UCLIBC_HAS_WCHAR) += wcsncmp.c
+obj-@(UCLIBC_HAS_WCHAR) += wcsncpy.c
+obj-@(UCLIBC_HAS_WCHAR) += wcsnlen.c
+obj-@(UCLIBC_HAS_WCHAR) += wcspbrk.c
+obj-@(UCLIBC_HAS_WCHAR) += wcsrchr.c
+obj-@(UCLIBC_HAS_WCHAR) += wcsspn.c
+obj-@(UCLIBC_HAS_WCHAR) += wcsstr.c
+obj-@(UCLIBC_HAS_WCHAR) += wcstok.c
+obj-@(UCLIBC_HAS_WCHAR) += wcsxfrm.c
+obj-@(UCLIBC_HAS_WCHAR) += wmemchr.c
+obj-@(UCLIBC_HAS_WCHAR) += wmemcmp.c
+obj-@(UCLIBC_HAS_WCHAR) += wmemcpy.c
+obj-@(UCLIBC_HAS_WCHAR) += wmemmove.c
+obj-@(UCLIBC_HAS_WCHAR) += wmempcpy.c
+obj-@(UCLIBC_HAS_WCHAR) += wmemset.c
+
+# TODO: This part is i386 specific (commented objs are in i386/ or generic/)
+obj-y += __glibc_strerror_r.c
+obj-y += __xpg_basename.c
+obj-y += __xpg_strerror_r.c
+obj-y += _string_syserrmsgs.c
+obj-y += _string_syssigmsgs.c
+obj-y += basename.c
+obj-y += bcopy.c
+obj-y += bzero.c
+obj-y += dirname.c
+obj-y += ffs.c
+obj-y += memccpy.c
+#obj-y += memchr.c
+#obj-y += memcmp.c
+#obj-y += memcpy.c
+#obj-y += memmem.c
+#obj-y += memmove.c
+#obj-y += mempcpy.c
+#obj-y += memrchr.c
+#obj-y += memset.c
+obj-y += psignal.c
+obj-y += stpcpy.c
+obj-y += stpncpy.c
+obj-y += strcasecmp.c
+obj-y += strcasestr.c
+#obj-y += strcat.c
+#obj-y += strchr.c
+#obj-y += strchrnul.c
+#obj-y += strcmp.c
+#obj-y += strcpy.c
+#obj-y += strcspn.c
+obj-y += strdup.c
+obj-y += strerror.c
+obj-y += strlcat.c
+obj-y += strlcpy.c
+#obj-y += strlen.c
+obj-y += strncasecmp.c
+#obj-y += strncat.c
+#obj-y += strncmp.c
+#obj-y += strncpy.c
+obj-y += strndup.c
+#obj-y += strnlen.c
+obj-y += strpbrk.c
+#obj-y += strrchr.c
+#obj-y += strsep.c
+obj-y += strsignal.c
+#obj-y += strspn.c
+#obj-y += strstr.c
+obj-y += strtok.c
+#obj-y += strtok_r.c
+obj-y += strverscmp.c
+obj-@(UCLIBC_HAS_LOCALE) += strxfrm.c
+obj-y += sys_errlist.c
+obj-y += sys_siglist.c
+
+CFLAGS += $(UCLIBC_LINUX_INCLUDES)
+
+: foreach $(obj-y) | $(compiler_proper) $(uclibc_headers) |> ^ CC %f^ $(CC) -c %f -o %o $(CFLAGS) $(CFLAGS_%e) |> %B.o

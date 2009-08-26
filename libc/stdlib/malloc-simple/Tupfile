@@ -1,0 +1,9 @@
+include_rules
+
+obj-@(UCLIBC_MALLOC_SIMPLE) += calloc.c
+obj-@(UCLIBC_MALLOC_SIMPLE) += free.c
+obj-@(UCLIBC_MALLOC_SIMPLE) += malloc.c
+obj-@(UCLIBC_MALLOC_SIMPLE) += memalign.c
+obj-@(UCLIBC_MALLOC_SIMPLE) += realloc.c
+
+: foreach $(obj-y) | $(compiler_proper) $(uclibc_headers) |> ^ CC %f^ $(CC) -c %f -o %o $(CFLAGS) $(CFLAGS_%e) |> %B.o

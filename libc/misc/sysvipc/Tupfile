@@ -1,0 +1,10 @@
+include_rules
+
+obj-y += ftok.c __syscall_ipc.c
+obj-y += semget.c semctl.c semop.c semtimedop.c
+obj-y += shmat.c shmctl.c shmdt.c shmget.c
+obj-y += msgctl.c msgget.c msgrcv.c msgsnd.c
+
+CFLAGS += $(UCLIBC_LINUX_INCLUDES)
+
+: foreach $(obj-y) | $(compiler_proper) $(uclibc_headers) |> ^ CC %f^ $(CC) -c %f -o %o $(CFLAGS) $(CFLAGS_%e) |> %B.o

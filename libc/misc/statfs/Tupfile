@@ -1,0 +1,13 @@
+include_rules
+
+obj-y += statvfs.c fstatvfs.c
+ifeq (@(UCLIBC_HAS_LFS),y)
+	obj-@(UCLIBC_LINUX_SPECIFIC) += fstatfs64.c
+	obj-@(UCLIBC_LINUX_SPECIFIC) += statfs64.c
+	obj-y += statvfs64.c
+	obj-y += fstatvfs64.c
+endif
+
+CFLAGS += $(UCLIBC_LINUX_INCLUDES)
+
+: foreach $(obj-y) | $(compiler_proper) $(uclibc_headers) |> ^ CC %f^ $(CC) -c %f -o %o $(CFLAGS) $(CFLAGS_%e) |> %B.o

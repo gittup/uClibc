@@ -1,0 +1,60 @@
+include_rules
+
+#TODO: ifneq
+ifeq (@(UCLIBC_HAS_CRYPT_IMPL)@(UCLIBC_HAS_IPV4)@(UCLIBC_HAS_IPV6),)
+else
+# des uses ntohl
+	obj-y += ntohl.c
+endif
+
+#TODO: ifneq
+ifeq (@(UCLIBC_HAS_IPV4)@(UCLIBC_HAS_IPV6),)
+else
+obj-y += getservice.c getproto.c hostid.c getnetent.c getnetbynm.c getnetbyad.c
+obj-y += inet_net.c herror.c if_index.c gai_strerror.c getaddrinfo.c
+obj-y += ether_addr.c ifaddrs.c ntop.c
+
+# multi source addr.c
+obj-y += inet_aton.c inet_addr.c inet_ntoa.c inet_makeaddr.c
+obj-y += inet_lnaof.c inet_netof.c
+
+# multi source resolv.c
+obj-y += encodeh.c decodeh.c encoded.c decoded.c
+obj-y += encodeq.c encodea.c
+obj-y += dnslookup.c opennameservers.c closenameservers.c
+obj-y += read_etc_hosts_r.c get_hosts_byaddr_r.c get_hosts_byname_r.c
+obj-y += getnameinfo.c
+obj-y += gethostbyaddr_r.c gethostbyname_r.c gethostbyname2_r.c gethostent_r.c
+obj-y += gethostbyaddr.c gethostbyname.c gethostbyname2.c gethostent.c
+obj-y += res_init.c res_query.c res_comp.c ns_name.c
+endif
+
+# multi source socketcalls.c
+obj-@(UCLIBC_HAS_SOCKET) += accept.c
+obj-@(UCLIBC_HAS_SOCKET) += bind.c
+obj-@(UCLIBC_HAS_SOCKET) += connect.c
+obj-@(UCLIBC_HAS_SOCKET) += getpeername.c
+obj-@(UCLIBC_HAS_SOCKET) += getsockname.c
+obj-@(UCLIBC_HAS_SOCKET) += getsockopt.c
+obj-@(UCLIBC_HAS_SOCKET) += listen.c
+obj-@(UCLIBC_HAS_SOCKET) += recv.c
+obj-@(UCLIBC_HAS_SOCKET) += recvfrom.c
+obj-@(UCLIBC_HAS_SOCKET) += recvmsg.c
+obj-@(UCLIBC_HAS_SOCKET) += send.c
+obj-@(UCLIBC_HAS_SOCKET) += sendmsg.c
+obj-@(UCLIBC_HAS_SOCKET) += sendto.c
+obj-@(UCLIBC_HAS_SOCKET) += setsockopt.c
+obj-@(UCLIBC_HAS_SOCKET) += shutdown.c
+obj-@(UCLIBC_HAS_SOCKET) += socket.c
+obj-@(UCLIBC_HAS_SOCKET) += socketpair.c
+obj-@(UCLIBC_HAS_SOCKET) += opensock.c
+
+#TODO: ifneq
+ifeq (@(UCLIBC_HAS_SOCKET)@(UCLIBC_HAS_IPV4)@(UCLIBC_HAS_IPV6),)
+else
+obj-y += ethers.c
+endif
+
+CFLAGS += $(UCLIBC_LINUX_INCLUDES)
+
+: foreach $(obj-y) | $(compiler_proper) $(uclibc_headers) |> ^ CC %f^ $(CC) -c %f -o %o $(CFLAGS) $(CFLAGS_%e) |> %B.o

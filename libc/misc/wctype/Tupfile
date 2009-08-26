@@ -1,0 +1,41 @@
+include_rules
+
+obj-@(UCLIBC_HAS_WCHAR) += iswalnum.c
+obj-@(UCLIBC_HAS_WCHAR) += iswalpha.c
+obj-@(UCLIBC_HAS_WCHAR) += iswcntrl.c
+obj-@(UCLIBC_HAS_WCHAR) += iswdigit.c
+obj-@(UCLIBC_HAS_WCHAR) += iswgraph.c
+obj-@(UCLIBC_HAS_WCHAR) += iswlower.c
+obj-@(UCLIBC_HAS_WCHAR) += iswprint.c
+obj-@(UCLIBC_HAS_WCHAR) += iswpunct.c
+obj-@(UCLIBC_HAS_WCHAR) += iswspace.c
+obj-@(UCLIBC_HAS_WCHAR) += iswupper.c
+obj-@(UCLIBC_HAS_WCHAR) += iswxdigit.c
+obj-@(UCLIBC_HAS_WCHAR) += iswblank.c
+obj-@(UCLIBC_HAS_WCHAR) += wctrans.c
+obj-@(UCLIBC_HAS_WCHAR) += towctrans.c
+obj-@(UCLIBC_HAS_WCHAR) += wctype.c
+obj-@(UCLIBC_HAS_WCHAR) += iswctype.c
+obj-@(UCLIBC_HAS_WCHAR) += towlower.c
+obj-@(UCLIBC_HAS_WCHAR) += towupper.c
+
+obj-@(UCLIBC_HAS_XLOCALE) += iswalnum_l.c
+obj-@(UCLIBC_HAS_XLOCALE) += iswalpha_l.c
+obj-@(UCLIBC_HAS_XLOCALE) += iswcntrl_l.c
+obj-@(UCLIBC_HAS_XLOCALE) += iswdigit_l.c
+obj-@(UCLIBC_HAS_XLOCALE) += iswgraph_l.c
+obj-@(UCLIBC_HAS_XLOCALE) += iswlower_l.c
+obj-@(UCLIBC_HAS_XLOCALE) += iswprint_l.c
+obj-@(UCLIBC_HAS_XLOCALE) += iswpunct_l.c
+obj-@(UCLIBC_HAS_XLOCALE) += iswspace_l.c
+obj-@(UCLIBC_HAS_XLOCALE) += iswupper_l.c
+obj-@(UCLIBC_HAS_XLOCALE) += iswxdigit_l.c
+obj-@(UCLIBC_HAS_XLOCALE) += iswblank_l.c
+obj-@(UCLIBC_HAS_XLOCALE) += wctrans_l.c
+obj-@(UCLIBC_HAS_XLOCALE) += towctrans_l.c
+obj-@(UCLIBC_HAS_XLOCALE) += wctype_l.c
+obj-@(UCLIBC_HAS_XLOCALE) += iswctype_l.c
+obj-@(UCLIBC_HAS_XLOCALE) += towlower_l.c
+obj-@(UCLIBC_HAS_XLOCALE) += towupper_l.c
+
+: foreach $(obj-y) | $(compiler_proper) $(uclibc_headers) |> ^ CC %f^ $(CC) -c %f -o %o $(CFLAGS) $(CFLAGS_%e) |> %B.o

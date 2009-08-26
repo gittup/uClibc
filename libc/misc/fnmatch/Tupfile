@@ -1,0 +1,11 @@
+include_rules
+
+ifeq (@(UCLIBC_HAS_FNMATCH_OLD),y)
+obj-y +=  fnmatch_old.c
+else
+obj-y += fnmatch.c
+endif
+
+CFLAGS += $(UCLIBC_LINUX_INCLUDES)
+
+: foreach $(obj-y) | $(compiler_proper) $(uclibc_headers) |> ^ CC %f^ $(CC) -c %f -o %o $(CFLAGS) $(CFLAGS_%e) |> %B.o

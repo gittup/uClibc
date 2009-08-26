@@ -1,0 +1,35 @@
+.gitignore
+obj-y += inet/*.o
+obj-y += misc/assert/*.o
+obj-y += misc/ctype/*.o
+obj-y += misc/dirent/*.o
+obj-y += misc/elf/*.o
+obj-y += misc/error/*.o
+obj-y += misc/file/*.o
+obj-y += misc/fnmatch/*.o
+obj-y += misc/glob/*.o
+obj-y += misc/gnu/*.o
+obj-y += misc/internals/*.o
+obj-y += misc/locale/*.o
+obj-y += misc/mntent/*.o
+obj-y += misc/regex/*.o
+obj-y += misc/search/*.o
+obj-y += misc/statfs/*.o
+obj-y += misc/syslog/*.o
+obj-y += misc/sysvipc/*.o
+obj-y += misc/time/*.o
+obj-y += misc/ttyent/*.o
+obj-y += misc/utmp/*.o
+obj-y += pwd_grp/*.o
+obj-y += signal/*.o
+obj-y += stdio/*.o
+obj-y += stdlib/*.o
+obj-y += stdlib/malloc-standard/*.o
+obj-y += string/*.o
+obj-y += sysdeps/linux/common/*.o
+obj-y += sysdeps/linux/i386/*.o
+obj-y += termios/*.o
+obj-y += unistd/*.o
+obj-y += ../libpthread/linuxthreads.old/libc_pthread_init.o
+
+: $(obj-y) |> ^ AR %o^ rm -f %o; ar crs %o %f |> libc.a

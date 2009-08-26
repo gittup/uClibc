@@ -1,0 +1,50 @@
+include_rules
+
+obj-y += isalnum.c
+obj-y += isalpha.c
+obj-y += iscntrl.c
+obj-y += isdigit.c
+obj-y += isgraph.c
+obj-y += islower.c
+obj-y += isprint.c
+obj-y += ispunct.c
+obj-y += isspace.c
+obj-y += isupper.c
+obj-y += isxdigit.c
+obj-y += tolower.c
+obj-y += toupper.c
+obj-y += isblank.c
+obj-@(UCLIBC_SUSV4_LEGACY) += isascii.c
+obj-@(UCLIBC_SUSV4_LEGACY) += toascii.c
+
+obj-@(UCLIBC_HAS_CTYPE_TABLES) += __C_ctype_b.c
+obj-@(UCLIBC_HAS_CTYPE_TABLES) += __C_ctype_tolower.c
+obj-@(UCLIBC_HAS_CTYPE_TABLES) += __C_ctype_toupper.c
+obj-@(UCLIBC_HAS_CTYPE_TABLES) += __ctype_b_loc.c
+obj-@(UCLIBC_HAS_CTYPE_TABLES) += __ctype_tolower_loc.c
+obj-@(UCLIBC_HAS_CTYPE_TABLES) += __ctype_toupper_loc.c
+obj-@(UCLIBC_HAS_CTYPE_TABLES) += __ctype_assert.c
+obj-@(UCLIBC_HAS_CTYPE_TABLES) += isctype.c
+
+ifeq (@(UCLIBC_HAS_XLOCALE),y)
+	obj-y += isalnum_l.c
+	obj-y += isalpha_l.c
+	obj-y += iscntrl_l.c
+	obj-y += isdigit_l.c
+	obj-y += isgraph_l.c
+	obj-y += islower_l.c
+	obj-y += isprint_l.c
+	obj-y += ispunct_l.c
+	obj-y += isspace_l.c
+	obj-y += isupper_l.c
+	obj-y += isxdigit_l.c
+	obj-y += tolower_l.c
+	obj-y += toupper_l.c
+	obj-y += isblank_l.c
+	obj-@(UCLIBC_SUSV4_LEGACY) += isascii_l.c
+	obj-@(UCLIBC_SUSV4_LEGACY) += toascii_l.c
+endif
+
+CFLAGS += $(UCLIBC_LINUX_INCLUDES)
+
+: foreach $(obj-y) | $(compiler_proper) $(uclibc_headers) |> ^ CC %f^ $(CC) -c %f -o %o $(CFLAGS) $(CFLAGS_%e) |> %B.o

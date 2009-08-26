@@ -1,0 +1,48 @@
+include_rules
+
+obj-y += confstr.c
+obj-y += daemon.c
+obj-y += execl.c
+obj-y += execle.c
+obj-y += execlp.c
+obj-y += execv.c
+obj-y += execvp.c
+obj-y += fpathconf.c
+obj-y += getlogin.c
+obj-y += getpass.c
+obj-y += pathconf.c
+obj-y += swab.c
+obj-y += sysconf.c
+obj-y += usershell.c
+
+#TODO: ifneq
+ifeq (@(ARCH_USE_MMU),y)
+else
+	obj-y += __exec_alloc.c
+endif
+
+ifeq (@(UCLIBC_HAS_GNU_GETOPT),y)
+	obj-y += getopt.c
+else
+	obj-y += getopt-susv3.c
+	obj-@(UCLIBC_HAS_GETOPT_LONG) += getopt_long-simple.c
+endif
+
+ifeq (@(UCLIBC_HAS_GNU_GETSUBOPT),y)
+	obj-y += getsubopt.c
+else
+	obj-y += getsubopt-susv3.c
+endif
+
+obj-@(UCLIBC_SUSV3_LEGACY) += ualarm.c
+obj-@(UCLIBC_SUSV3_LEGACY) += usleep.c
+
+# TODO: ifneq
+ifeq (@(UCLIBC_HAS_THREADS_NATIVE),y)
+else
+	obj-y += sleep.c
+endif
+
+CFLAGS += $(UCLIBC_LINUX_INCLUDES)
+
+: foreach $(obj-y) | $(compiler_proper) $(uclibc_headers) |> ^ CC %f^ $(CC) -c %f -o %o $(CFLAGS) $(CFLAGS_%e) |> %B.o

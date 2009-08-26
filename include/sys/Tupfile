@@ -1,0 +1,18 @@
+.gitignore
+
+headers += ../../libc/sysdeps/linux/common/sys/acct.h
+headers += ../../libc/sysdeps/linux/common/sys/epoll.h
+headers += ../../libc/sysdeps/linux/common/sys/inotify.h
+headers += ../../libc/sysdeps/linux/common/sys/prctl.h
+headers += ../../libc/sysdeps/linux/common/sys/ptrace.h
+headers += ../../libc/sysdeps/linux/i386/sys/debugreg.h
+headers += ../../libc/sysdeps/linux/i386/sys/elf.h
+headers += ../../libc/sysdeps/linux/i386/sys/io.h
+headers += ../../libc/sysdeps/linux/i386/sys/perm.h
+headers += ../../libc/sysdeps/linux/i386/sys/procfs.h
+headers += ../../libc/sysdeps/linux/i386/sys/reg.h
+headers += ../../libc/sysdeps/linux/i386/sys/ucontext.h
+headers += ../../libc/sysdeps/linux/i386/sys/user.h
+headers += ../../libc/sysdeps/linux/i386/sys/vm86.h
+
+: foreach $(headers) |> ^ LN %f <- %o^ rm -f %o; ln -s %f %o |> %b

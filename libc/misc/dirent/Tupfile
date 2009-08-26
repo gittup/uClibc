@@ -1,0 +1,23 @@
+include_rules
+
+obj-y += alphasort.c
+obj-y += closedir.c
+obj-y += dirfd.c
+obj-y += opendir.c
+obj-y += readdir.c
+obj-y += rewinddir.c
+obj-y += scandir.c
+obj-y += seekdir.c
+obj-y += telldir.c
+obj-y += readdir_r.c
+obj-y += versionsort.c
+
+obj-@(UCLIBC_HAS_LFS) += readdir64.c
+obj-@(UCLIBC_HAS_LFS) += alphasort64.c
+obj-@(UCLIBC_HAS_LFS) += scandir64.c
+obj-@(UCLIBC_HAS_LFS) += readdir64_r.c
+obj-@(UCLIBC_HAS_LFS) += versionsort64.c
+
+CFLAGS += $(UCLIBC_LINUX_INCLUDES)
+
+: foreach $(obj-y) | $(compiler_proper) $(uclibc_headers) |> ^ CC %f^ $(CC) -c %f -o %o $(CFLAGS) $(CFLAGS_%e) |> %B.o

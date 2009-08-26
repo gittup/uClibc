@@ -1,0 +1,11 @@
+include_rules
+
+obj-y += hsearch.c
+obj-y += tsearch.c tfind.c tdelete.c twalk.c tdestroy.c
+obj-y += lfind.c lsearch.c
+obj-y += insque.c remque.c
+obj-y += hcreate_r.c hdestroy_r.c hsearch_r.c
+
+CFLAGS += $(UCLIBC_LINUX_INCLUDES)
+
+: foreach $(obj-y) | $(compiler_proper) $(uclibc_headers) |> ^ CC %f^ $(CC) -c %f -o %o $(CFLAGS) $(CFLAGS_%e) |> %B.o

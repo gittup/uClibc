@@ -1,0 +1,17 @@
+include_rules
+
+obj-y += setlocale.c
+obj-y += localeconv.c
+obj-y += _locale_init.c
+obj-y += nl_langinfo.c
+obj-@(UCLIBC_HAS_LOCALE) += newlocale.c
+obj-@(UCLIBC_HAS_LOCALE) += __locale_mbrtowc_l.c
+obj-@(UCLIBC_HAS_XLOCALE) += nl_langinfo_l.c
+obj-@(UCLIBC_HAS_XLOCALE) += duplocale.c
+obj-@(UCLIBC_HAS_XLOCALE) += freelocale.c
+obj-@(UCLIBC_HAS_XLOCALE) += uselocale.c
+obj-@(UCLIBC_HAS_XLOCALE) += __curlocale.c
+
+CFLAGS += $(UCLIBC_LINUX_INCLUDES)
+
+: foreach $(obj-y) | $(compiler_proper) $(uclibc_headers) |> ^ CC %f^ $(CC) -c %f -o %o $(CFLAGS) $(CFLAGS_%e) |> %B.o

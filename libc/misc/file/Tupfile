@@ -1,0 +1,8 @@
+include_rules
+
+obj-y += lockf.c
+obj-@(UCLIBC_HAS_LFS) += lockf64.c
+
+CFLAGS += $(UCLIBC_LINUX_INCLUDES)
+
+: foreach $(obj-y) | $(compiler_proper) $(uclibc_headers) |> ^ CC %f^ $(CC) -c %f -o %o $(CFLAGS) $(CFLAGS_%e) |> %B.o
