@@ -14,4 +14,4 @@ ifeq (@(UCLIBC_MALLOC_DEBUGGING)@(UCLIBC_UCLINUX_BROKEN_MUNMAP),yy)
 	CFLAGS += -DMALLOC_MMB_DEBUGGING
 endif
 
-: foreach $(obj-y) | $(compiler_proper) |> ^ CC %f^ $(CC) -c %f -o %o $(CFLAGS) $(CFLAGS_%e) |> %B.o
+: foreach $(obj-y) |> !cc_proper |> %B.o

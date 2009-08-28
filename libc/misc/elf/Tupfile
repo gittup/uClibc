@@ -11,4 +11,4 @@ CFLAGS_dl-core.c += -I$(UCLIBC_ROOT)/ldso/include
 
 CFLAGS += $(UCLIBC_LINUX_INCLUDES)
 
-: foreach $(obj-y) | $(compiler_proper) |> ^ CC %f^ $(CC) -c %f -o %o $(CFLAGS) $(CFLAGS_%e) $(CFLAGS_%f) |> %B.o
+: foreach $(obj-y) |> !cc_proper |> %B.o

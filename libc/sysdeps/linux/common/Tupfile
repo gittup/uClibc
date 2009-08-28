@@ -224,4 +224,4 @@ obj-y += xstatconv.c
 
 CFLAGS += $(UCLIBC_LINUX_INCLUDES)
 
-: foreach $(obj-y) | $(compiler_proper) |> ^ CC %f^ $(CC) -c %f -o %o $(CFLAGS) $(CFLAGS_%e) |> %B.o
+: foreach $(obj-y) |> !cc_proper |> %B.o

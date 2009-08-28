@@ -11,7 +11,6 @@ CFLAGS += -fdata-sections
 CFLAGS += -m32
 CFLAGS += -fno-stack-protector
 CFLAGS += -nostdinc
-CFLAGS += -Os
 CFLAGS += -funit-at-a-time
 CFLAGS += -fno-tree-loop-optimize
 CFLAGS += -fno-tree-dominator-opts
