@@ -1,6 +1,0 @@
-.gitignore
-
-headers += ../libc/sysdeps/linux/common/dl-osinfo.h
-headers += ../libc/sysdeps/linux/common/hp-timing.h
-
-: foreach $(headers) |> ^ LN %f <- %o^ rm -f %o; ln -s %f %o |> %b

@@ -6,4 +6,4 @@ else
 obj-y += regex.c
 endif
 
-: foreach $(obj-y) | $(compiler_proper) $(uclibc_headers) |> ^ CC %f^ $(CC) -c %f -o %o $(CFLAGS) $(CFLAGS_%e) |> %B.o
+: foreach $(obj-y) | $(compiler_proper) |> ^ CC %f^ $(CC) -c %f -o %o $(CFLAGS) $(CFLAGS_%e) |> %B.o

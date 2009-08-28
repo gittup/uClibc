@@ -38,4 +38,4 @@ obj-@(UCLIBC_HAS_XLOCALE) += iswctype_l.c
 obj-@(UCLIBC_HAS_XLOCALE) += towlower_l.c
 obj-@(UCLIBC_HAS_XLOCALE) += towupper_l.c
 
-: foreach $(obj-y) | $(compiler_proper) $(uclibc_headers) |> ^ CC %f^ $(CC) -c %f -o %o $(CFLAGS) $(CFLAGS_%e) |> %B.o
+: foreach $(obj-y) | $(compiler_proper) |> ^ CC %f^ $(CC) -c %f -o %o $(CFLAGS) $(CFLAGS_%e) |> %B.o

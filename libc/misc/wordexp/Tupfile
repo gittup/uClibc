@@ -2,4 +2,4 @@ include_rules
 
 obj-@(UCLIBC_HAS_WORDEXP) += wordexp.c
 
-: foreach $(obj-y) | $(compiler_proper) $(uclibc_headers) |> ^ CC %f^ $(CC) -c %f -o %o $(CFLAGS) $(CFLAGS_%e) |> %B.o
+: foreach $(obj-y) | $(compiler_proper) |> ^ CC %f^ $(CC) -c %f -o %o $(CFLAGS) $(CFLAGS_%e) |> %B.o

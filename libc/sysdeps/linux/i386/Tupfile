@@ -25,4 +25,4 @@ CFLAGS_crt1.S += -DL_crt1
 
 CFLAGS += $(UCLIBC_LINUX_INCLUDES)
 
-: foreach $(obj-y) | $(compiler_proper) $(UCLIBC_ROOT)/include/bits/*.h $(UCLIBC_ROOT)/include/sys/*.h |> ^ CC %f^ $(CC_PROPER) -c %f -o %o $(CFLAGS) $(CFLAGS_%e) $(CFLAGS_%f) |> %B.o
+: foreach $(obj-y) | $(compiler_proper) |> ^ CC %f^ $(CC_PROPER) -c %f -o %o $(CFLAGS) $(CFLAGS_%e) $(CFLAGS_%f) |> %B.o

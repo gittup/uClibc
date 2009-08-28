@@ -8,5 +8,5 @@ CFLAGS += -I../include
 CFLAGS += -I../ldso/i386
 CFLAGS += $(UCLIBC_LINUX_INCLUDES)
 
-: foreach libdl.c | $(compiler_proper) $(uclibc_headers) |> ^ CC %f^ $(CC) -c %f -o %o $(CFLAGS) $(CFLAGS_%e) -DUCLIBC_RUNTIME_PREFIX='"/usr/i386-linux-uclibc/"' -DUCLIBC_LDSO=\"ld-uClibc.so.0\" -DLDSO_ELFINTERP=\"i386/elfinterp.c\" |> %B.o {objs}
+: foreach libdl.c | $(compiler_proper) |> ^ CC %f^ $(CC) -c %f -o %o $(CFLAGS) $(CFLAGS_%e) -DUCLIBC_RUNTIME_PREFIX='"/usr/i386-linux-uclibc/"' -DUCLIBC_LDSO=\"ld-uClibc.so.0\" -DLDSO_ELFINTERP=\"i386/elfinterp.c\" |> %B.o {objs}
 : {objs} | $(archiver) |> ^ AR %o^ $(AR) rcs %o %f |> libdl_so.a
