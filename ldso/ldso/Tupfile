@@ -1,6 +1,5 @@
 include_rules
 
-CFLAGS += -fPIC
 CFLAGS += -DSHARED
 CFLAGS += -DNOT_IN_libc
 CFLAGS += -DIS_IN_rtld
