@@ -1,11 +1,11 @@
 include_rules
 
-obj-@(UCLIBC_MALLOC) += malloc.c calloc.c free.c realloc.c memalign.c
-obj-@(UCLIBC_MALLOC) += heap_alloc.c heap_alloc_at.c heap_free.c
+obj-@(MALLOC) += malloc.c calloc.c free.c realloc.c memalign.c
+obj-@(MALLOC) += heap_alloc.c heap_alloc_at.c heap_free.c
 
 # Turn on malloc debugging if requested
 ifeq (@(UCLIBC_MALLOC_DEBUGGING),y)
-	obj-@(UCLIBC_MALLOC) += malloc_debug.c heap_debug.c
+	obj-@(MALLOC) += malloc_debug.c heap_debug.c
 	CFLAGS += -DMALLOC_DEBUGGING -DHEAP_DEBUGGING
 endif
 

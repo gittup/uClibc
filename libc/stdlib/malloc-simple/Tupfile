@@ -1,9 +1,9 @@
 include_rules
 
-obj-@(UCLIBC_MALLOC_SIMPLE) += calloc.c
-obj-@(UCLIBC_MALLOC_SIMPLE) += free.c
-obj-@(UCLIBC_MALLOC_SIMPLE) += malloc.c
-obj-@(UCLIBC_MALLOC_SIMPLE) += memalign.c
-obj-@(UCLIBC_MALLOC_SIMPLE) += realloc.c
+obj-@(MALLOC_SIMPLE) += calloc.c
+obj-@(MALLOC_SIMPLE) += free.c
+obj-@(MALLOC_SIMPLE) += malloc.c
+obj-@(MALLOC_SIMPLE) += memalign.c
+obj-@(MALLOC_SIMPLE) += realloc.c
 
 : foreach $(obj-y) |> !cc_proper |> %B.o

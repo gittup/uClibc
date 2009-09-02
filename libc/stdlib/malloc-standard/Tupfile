@@ -1,12 +1,12 @@
 include_rules
 
-obj-@(UCLIBC_MALLOC_STANDARD) += malloc.c
-obj-@(UCLIBC_MALLOC_STANDARD) += calloc.c
-obj-@(UCLIBC_MALLOC_STANDARD) += realloc.c
-obj-@(UCLIBC_MALLOC_STANDARD) += free.c
-obj-@(UCLIBC_MALLOC_STANDARD) += memalign.c
-obj-@(UCLIBC_MALLOC_STANDARD) += mallopt.c
-obj-@(UCLIBC_MALLOC_STANDARD) += mallinfo.c
+obj-@(MALLOC_STANDARD) += malloc.c
+obj-@(MALLOC_STANDARD) += calloc.c
+obj-@(MALLOC_STANDARD) += realloc.c
+obj-@(MALLOC_STANDARD) += free.c
+obj-@(MALLOC_STANDARD) += memalign.c
+obj-@(MALLOC_STANDARD) += mallopt.c
+obj-@(MALLOC_STANDARD) += mallinfo.c
 
 CFLAGS += $(UCLIBC_LINUX_INCLUDES)
 
