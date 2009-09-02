@@ -13,3 +13,4 @@ CFLAGS += -DLDSO_ELFINTERP=\"i386/elfinterp.c\"
 
 : foreach ldso.c i386/resolve.S |> !cc_proper |> %B.o {objs}
 : {objs} |> !ar |> ld-uClibc_so.a
+: ld-uClibc_so.a |> !uclibc_ld_so |> ld-uClibc.so
