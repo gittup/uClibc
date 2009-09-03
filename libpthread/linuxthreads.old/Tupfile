@@ -1,7 +1,12 @@
 include_rules
 
 obj-y += libc_pthread_init.c
+obj-y += pthread.c
 
 CFLAGS += $(UCLIBC_LINUX_INCLUDES)
 
 : foreach $(obj-y) |> !cc_proper |> %B.o
+
+CFLAGS += -DSHARED
+obj-y += forward.c
+: foreach $(obj-y) |> !cc_proper |> %B.oS

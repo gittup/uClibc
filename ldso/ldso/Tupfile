@@ -13,4 +13,12 @@ CFLAGS += -DLDSO_ELFINTERP=\"i386/elfinterp.c\"
 
 : foreach ldso.c i386/resolve.S |> !cc_proper |> %B.o {objs}
 : {objs} |> !ar |> ld-uClibc_so.a
+
+LDFLAGS += -Wl,-e,_start
+LDFLAGS += -Wl,-z,now
+LDFLAGS += -Wl,-Bsymbolic
+LDFLAGS += -Wl,--export-dynamic
+LDFLAGS += -Wl,--discard-locals
+LDFLAGS += -Wl,--discard-all
+LDFLAGS += -Wl,--no-undefined
 : ld-uClibc_so.a |> !uclibc_ld_so |> ld-uClibc.so

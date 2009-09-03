@@ -1,9 +1,8 @@
-.gitignore
+include_rules
 obj-y += inet/*.o
 obj-y += misc/assert/*.o
 obj-y += misc/ctype/*.o
 obj-y += misc/dirent/*.o
-obj-y += misc/elf/*.o
 obj-y += misc/error/*.o
 obj-y += misc/file/*.o
 obj-y += misc/fnmatch/*.o
@@ -30,6 +29,32 @@ obj-y += sysdeps/linux/common/*.o
 obj-y += sysdeps/linux/i386/*.o
 obj-y += termios/*.o
 obj-y += unistd/*.o
-obj-y += ../libpthread/linuxthreads.old/libc_pthread_init.o
 
-: $(obj-y) |> ^ AR %o^ rm -f %o; ar crs %o %f |> libc.a
+static-y += ../libpthread/linuxthreads.old/libc_pthread_init.o
+static-y += misc/elf/*.o
+static-y += misc/internals/__uClibc_main.os
+static-y += stdlib/atexit.os
+
+shared-y += ../libpthread/linuxthreads.old/forward.oS
+shared-y += ../libpthread/linuxthreads.old/libc_pthread_init.oS
+shared-y += misc/elf/dl-iterate-phdr.oS
+shared-y += misc/internals/__uClibc_main.oS
+
+!ar_libc = |> ^ AR %o^ rm -f %o; ar crs %o %f && strip -x -R .note -R .comment %o |>
+: $(obj-y) $(static-y) |> !ar_libc |> libc.a
+: $(obj-y) $(shared-y) |> !ar_libc |> libc_so.a
+: stdlib/atexit.os |> !ar_libc |> uclibc_nonshared.a
+: |> ^ GEN %o^ (echo "#include <features.h>"; echo "const char __dl_ldso__[] attribute_hidden __attribute__ ((weak)) __attribute__ ((section (\".interp\"))) =\"""/usr/i386-linux-uclibc/lib"/ld-uClibc.so.0"\";") > %o |> interp.c
+
+crt-y += sysdeps/linux/i386/crt1.S
+crt-y += sysdeps/linux/i386/crti.S
+crt-y += sysdeps/linux/i386/crtn.S
+CFLAGS_sysdeps/linux/i386/crti.S += -fPIC
+CFLAGS_sysdeps/linux/i386/crtn.S += -fPIC
+CFLAGS_sysdeps/linux/i386/crt1.S += -DL_crt1
+CFLAGS_S += -D__ASSEMBLER__ -Wa,--noexecstack
+
+: foreach $(crt-y) interp.c |> !cc_proper |> %B.otmp {crts}
+CFLAGS_sysdeps/linux/i386/crt1.S += -fPIE
+: foreach sysdeps/linux/i386/crt1.S |> !cc_proper |> Scrt1.otmp {crts}
+: foreach {crts} |> ^ STRIP %o^ strip -x -R .note -R .comment %f -o %o |> %B.o

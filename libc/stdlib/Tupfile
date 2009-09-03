@@ -54,8 +54,7 @@ endif
 obj-y += __cxa_atexit.c __cxa_finalize.c __exit_handler.c exit.c on_exit.c
 obj-@(COMPAT_ATEXIT) += old_atexit.c
 
-obj-y += atexit.c
-
 CFLAGS += $(UCLIBC_LINUX_INCLUDES)
 
 : foreach $(obj-y) |> !cc_proper |> %B.o
+: foreach atexit.c |> !cc_proper |> atexit.os

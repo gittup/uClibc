@@ -12,3 +12,6 @@ CFLAGS_dl-core.c += -I$(UCLIBC_ROOT)/ldso/include
 CFLAGS += $(UCLIBC_LINUX_INCLUDES)
 
 : foreach $(obj-y) |> !cc_proper |> %B.o
+
+CFLAGS_dl-iterate-phdr.c += -DSHARED
+: foreach dl-iterate-phdr.c |> !cc_proper |> %B.oS

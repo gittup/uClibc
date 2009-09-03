@@ -1,8 +1,5 @@
 include_rules
 
-obj-y += crt1.S
-obj-y += crti.S
-obj-y += crtn.S
 obj-y += brk.c
 obj-y += sigaction.c
 obj-y += __syscall_error.c
@@ -19,9 +16,6 @@ obj-y += mmap64.S
 obj-y += posix_fadvise64.S
 
 CFLAGS_S += -D__ASSEMBLER__ -Wa,--noexecstack
-CFLAGS_crti.S += -fPIC
-CFLAGS_crtn.S += -fPIC
-CFLAGS_crt1.S += -DL_crt1
 
 CFLAGS += $(UCLIBC_LINUX_INCLUDES)
 
