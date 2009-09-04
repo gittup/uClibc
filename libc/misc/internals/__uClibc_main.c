@@ -80,7 +80,7 @@ void internal_function _dl_aux_init (ElfW(auxv_t) *av);
  */
 extern int *weak_const_function __errno_location(void);
 libc_hidden_proto(__errno_location)
-extern int *weak_const_function __h_errno_location(void);
+extern int *__h_errno_location(void);
 libc_hidden_proto(__h_errno_location)
 
 extern void weak_function _stdio_init(void) attribute_hidden;
