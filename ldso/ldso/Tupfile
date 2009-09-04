@@ -11,8 +11,13 @@ CFLAGS += -DUCLIBC_RUNTIME_PREFIX='"/usr/i386-linux-uclibc/"'
 CFLAGS += -DUCLIBC_LDSO=\"ld-uClibc.so.0\"
 CFLAGS += -DLDSO_ELFINTERP=\"i386/elfinterp.c\"
 
+CFLAGS_S += -D__ASSEMBLER__
+CFLAGS_S += -Wa,--noexecstack
+CFLAGS_S += -fPIC
+
 : foreach ldso.c i386/resolve.S |> !cc_proper |> %B.o {objs}
-: {objs} |> !ar |> ld-uClibc_so.a
+: {objs} |> !ar |> ld-uClibc_so.atmp
+: ld-uClibc_so.atmp |> strip -x -R .note -R .comment %f -o %o |> ld-uClibc_so.a
 
 LDFLAGS += -Wl,-e,_start
 LDFLAGS += -Wl,-z,now

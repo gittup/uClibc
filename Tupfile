@@ -2,4 +2,4 @@ include_rules
 
 LDFLAGS += -Wl,-init,__uClibc_init
 LDEXTRA = libc/interp.o ldso/ldso/ld-uClibc.so libc/uclibc_nonshared.a
-: libc/libc_so.a | $(LDEXTRA) |> !uclibc_ld_so |> libc.so
+: libc/libc_so.a | $(LDEXTRA) |> !uclibc_ld_so |> libc.so.0
