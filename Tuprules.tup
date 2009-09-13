@@ -41,8 +41,4 @@ UCLIBC_LINUX_INCLUDES = -I$(LINUX_ROOT)/include -I$(LINUX_ROOT)/arch/x86/include
 #-DUCLIBC_LDSO=\"ld-uClibc.so.0\"
 #-DLDSO_ELFINTERP=\"i386/elfinterp.c\"
 
-# Can't use SLASH_ROOT/lib because it would cause a circular dependency with
-# libc
-compiler_files = $(SLASH_ROOT)/bin/xgcc $(SLASH_ROOT)/bin/cc1 $(SLASH_ROOT)/bin/as $(SLASH_ROOT)/bin/ld $(GCC_ROOT)/gcc/crtbegin.o $(GCC_ROOT)/gcc/crtend.o $(GCC_ROOT)/gcc/libgcc.a $(UCLIBC_ROOT)/libc/crt1.o $(UCLIBC_ROOT)/libc/crti.o $(UCLIBC_ROOT)/libc/crtn.o $(UCLIBC_ROOT)/libc/libc.a
-
-!uclibc_ld_so = | $(compiler_files) |> ^ LD-so %o^ $(SLASH_ROOT)/bin/xgcc -B$(UCLIBC_ROOT)/libc -B$(GCC_ROOT)/gcc -B$(SLASH_ROOT)/bin -Wl,-EL -Wl,--sort-common -Wl,--sort-section,alignment -m32 -shared -Wl,--warn-common -Wl,--warn-once -Wl,-z,combreloc -Wl,-z,relro -Wl,-z,defs -Wl,-s $(LDFLAGS) -Wl,-soname=%o -nostdlib -o %o -Wl,--whole-archive %f -Wl,--no-whole-archive $(LDEXTRA) $(GCC_ROOT)/gcc/libgcc.a |>
+!uclibc_ld_so = | $(compiler_files) |> ^ LD-so %o^ $(CC_LD) -Wl,-EL -Wl,--sort-common -Wl,--sort-section,alignment -m32 -shared -Wl,--warn-common -Wl,--warn-once -Wl,-z,combreloc -Wl,-z,relro -Wl,-z,defs -Wl,-s $(LDFLAGS) -Wl,-soname=%o -nostdlib -o %o -Wl,--whole-archive %f -Wl,--no-whole-archive $(LDEXTRA) $(GCC_ROOT)/gcc/libgcc.a |>
