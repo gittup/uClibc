@@ -5,6 +5,7 @@
 
 choice
 	prompt "Target Architecture"
+	default TARGET_i386
 	help
 	  The architecture of your target.
 
