@@ -1,0 +1,23 @@
+include_rules
+
+!uclibc_ld_so = | $(compiler_proper) $(BINUTILS_ROOT)/ld/ld $(GCC_ROOT)/gcc/libgcc.a |> ^ LD-so %o^ $(CC_LD) -Wl,-EL -Wl,--sort-common -Wl,--sort-section,alignment -m32 -shared -Wl,--warn-common -Wl,--warn-once -Wl,-z,combreloc -Wl,-z,relro -Wl,-z,defs -Wl,-s $(LDEXTRA_FLAGS) -Wl,-soname=%o -nostdlib -o %o -Wl,--whole-archive %f -Wl,--no-whole-archive $(LDEXTRA) $(GCC_ROOT)/gcc/libgcc.a |>
+
+copy_files += ../libc/crt1.o
+copy_files += ../libc/crti.o
+copy_files += ../libc/crtn.o
+copy_files += ../libc/libc.a
+copy_files += ../libc/uclibc_nonshared.a
+: foreach $(copy_files) |> ^ CP %o^ rm -f %o; cp %f %o |> %b
+
+LDEXTRA_FLAGS = -Wl,-e,_start
+LDEXTRA_FLAGS += -Wl,-z,now
+LDEXTRA_FLAGS += -Wl,-Bsymbolic
+LDEXTRA_FLAGS += -Wl,--export-dynamic
+LDEXTRA_FLAGS += -Wl,--discard-locals
+LDEXTRA_FLAGS += -Wl,--discard-all
+LDEXTRA_FLAGS += -Wl,--no-undefined
+: ../ldso/ldso/ld-uClibc_so.a |> !uclibc_ld_so |> ld-uClibc.so.0
+
+LDEXTRA_FLAGS = -Wl,-init,__uClibc_init
+LDEXTRA = ../libc/interp.o ld-uClibc.so.0 ../libc/uclibc_nonshared.a
+: ../libc/libc_so.a | $(LDEXTRA) |> !uclibc_ld_so |> libc.so.0

@@ -1,6 +1,1 @@
 include_rules
-
-LDFLAGS += -Wl,-init,__uClibc_init
-LDEXTRA = libc/interp.o ldso/ldso/ld-uClibc.so.0 libc/uclibc_nonshared.a
-: ldso/ldso/ld-uClibc.so.0 |> rm -f %o; cp %f %o |> %b
-: libc/libc_so.a | $(LDEXTRA) |> !uclibc_ld_so |> libc.so.0

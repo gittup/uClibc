@@ -37,5 +37,3 @@ CFLAGS += -I$(UCLIBC_ROOT)/libpthread
 CFLAGS_c += -fPIC
 
 UCLIBC_LINUX_INCLUDES = -I$(LINUX_ROOT)/include -I$(LINUX_ROOT)/arch/x86/include
-
-!uclibc_ld_so = | $(compiler_files) |> ^ LD-so %o^ $(CC_LD) -Wl,-EL -Wl,--sort-common -Wl,--sort-section,alignment -m32 -shared -Wl,--warn-common -Wl,--warn-once -Wl,-z,combreloc -Wl,-z,relro -Wl,-z,defs -Wl,-s $(LDFLAGS) -Wl,-soname=%o -nostdlib -o %o -Wl,--whole-archive %f -Wl,--no-whole-archive $(LDEXTRA) $(GCC_ROOT)/gcc/libgcc.a |>
