@@ -16,13 +16,6 @@
 #undef __NR_setresuid32
 #endif
 
-/* libc_hidden_proto(seteuid) */
-
-#if (defined __NR_setresuid || defined __NR_setresuid32) && defined __USE_GNU
-/* libc_hidden_proto(setresuid) */
-#endif
-/* libc_hidden_proto(setreuid) */
-
 int seteuid(uid_t uid)
 {
     int result;

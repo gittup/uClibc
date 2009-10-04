@@ -42,10 +42,12 @@ help:
 	@echo '  release		- create a distribution tarball'
 	@echo
 	@echo 'Environment variables:'
+	@echo '  O=<abspath>		- Use <abspath> as object directory'
 	@echo '  V="" 			- Quiet build (default)'
 	@echo '  V=1			- Verbose build'
 	@echo '  V=2			- Very verbose build'
 	@echo '  CROSS=		- Override CROSS_COMPILER_PREFIX from .config'
+	@echo '  ARCH= 		- Use given arch for config targets'
 	@echo '  SHELL=		- Shell to use for make'
 	@echo '  CONFIG_SHELL=		- Shell to use for menuconfig'
 	@echo

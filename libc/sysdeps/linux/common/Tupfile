@@ -196,6 +196,7 @@ obj-y += sysfs.c
 obj-y += sysinfo.c
 obj-y += tee.c
 obj-y += time.c
+obj-y += timerfd.c
 obj-y += times.c
 obj-y += truncate.c
 obj-y += truncate64.c
@@ -222,6 +223,7 @@ obj-y += writev.c
 obj-y += xattr.c
 obj-y += xstatconv.c
 
+CFLAGS_timerfd.c += -I.
 CFLAGS += $(UCLIBC_LINUX_INCLUDES)
 
 : foreach $(obj-y) |> !cc_proper |> %B.o

@@ -16,11 +16,6 @@
 # define OFFSET_TYPE   long int
 #endif
 
-#ifdef __UCLIBC_HAS_LFS__
-/* libc_hidden_proto(fseeko64) */
-#endif
-/* libc_hidden_proto(fseek) */
-
 int FSEEK(register FILE *stream, OFFSET_TYPE offset, int whence)
 {
 #if defined(__UCLIBC_HAS_LFS__) && !defined(__DO_LARGEFILE)

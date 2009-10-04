@@ -6,9 +6,14 @@
 #
 
 top_srcdir=./
-top_builddir=./
-#include $(top_builddir)Rules.mak
-#all: libs
-include Makefile.in
+top_builddir=$(if $(O),$(O),.)/
+export top_builddir
+
+# We do not need built-in implicit rules
+MAKEFLAGS += -r
+CONFIG_SHELL ?= /bin/sh
+export CONFIG_SHELL
+
+include $(top_srcdir)Makefile.in
 include $(top_srcdir)Makerules
 include $(top_srcdir)Makefile.help

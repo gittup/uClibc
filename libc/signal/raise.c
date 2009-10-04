@@ -7,15 +7,8 @@
 #include <signal.h>
 #include <sys/types.h>
 
-
-/* libc_hidden_proto(getpid) */
-/* libc_hidden_proto(kill) */
-
-int __raise (int signo)  attribute_hidden;
-int __raise(int signo)
+int raise(int signo)
 {
-    return kill(getpid(), signo);
+	return kill(getpid(), signo);
 }
-/* libc_hidden_proto(raise) */
-weak_alias(__raise,raise)
 libc_hidden_def(raise)

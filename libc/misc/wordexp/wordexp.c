@@ -35,55 +35,15 @@
 #include <glob.h>
 #include <wordexp.h>
 
-/* Experimentally off - libc_hidden_proto(mempcpy) */
-/* Experimentally off - libc_hidden_proto(stpcpy) */
-/* Experimentally off - libc_hidden_proto(strchr) */
-/* Experimentally off - libc_hidden_proto(strcpy) */
-/* Experimentally off - libc_hidden_proto(strdup) */
-/* Experimentally off - libc_hidden_proto(strlen) */
-/* Experimentally off - libc_hidden_proto(strndup) */
-/* Experimentally off - libc_hidden_proto(strspn) */
-/* Experimentally off - libc_hidden_proto(strcspn) */
-/* libc_hidden_proto(setenv) */
-/* libc_hidden_proto(unsetenv) */
-/* libc_hidden_proto(waitpid) */
-/* libc_hidden_proto(kill) */
-/* libc_hidden_proto(getuid) */
-/* libc_hidden_proto(getpwnam_r) */
-/* libc_hidden_proto(getpwuid_r) */
-/* libc_hidden_proto(execve) */
-/* libc_hidden_proto(dup2) */
-/* libc_hidden_proto(atoi) */
-/* libc_hidden_proto(fnmatch) */
-/* libc_hidden_proto(pipe) */
-/* libc_hidden_proto(fork) */
-/* libc_hidden_proto(open) */
-/* libc_hidden_proto(close) */
-/* libc_hidden_proto(read) */
-/* libc_hidden_proto(getenv) */
-/* libc_hidden_proto(getpid) */
-/* libc_hidden_proto(sprintf) */
-/* libc_hidden_proto(fprintf) */
-/* libc_hidden_proto(abort) */
-/* libc_hidden_proto(glob) */
-/* libc_hidden_proto(globfree) */
-/* libc_hidden_proto(wordfree) */
-#ifdef __UCLIBC_HAS_XLOCALE__
-/* libc_hidden_proto(__ctype_b_loc) */
-#elif defined __UCLIBC_HAS_CTYPE_TABLES__
-/* libc_hidden_proto(__ctype_b) */
-#endif
-
 #define __WORDEXP_FULL
-//#undef __WORDEXP_FULL
 
 /*
  * This is a recursive-descent-style word expansion routine.
  */
 
 /* These variables are defined and initialized in the startup code.  */
-//extern int __libc_argc;
-//extern char **__libc_argv;
+/*extern int __libc_argc;*/
+/*extern char **__libc_argv;*/
 
 /* FIXME!!!! */
 int attribute_hidden __libc_argc;
@@ -373,8 +333,8 @@ parse_tilde(char **word, size_t * word_length, size_t * max_length,
 
 static int
 do_parse_glob(const char *glob_word, char **word, size_t * word_length,
-			  size_t * max_length, wordexp_t * pwordexp, const char *ifs,
-			  const char *ifs_white)
+			  size_t * max_length, wordexp_t * pwordexp, const char *ifs
+			  /*, const char *ifs_white*/)
 {
 	int error;
 	int match;
@@ -497,7 +457,7 @@ parse_glob(char **word, size_t * word_length, size_t * max_length,
 	*word = w_newword(word_length, max_length);
 	for (i = 0; error == 0 && i < glob_list.we_wordc; i++)
 		error = do_parse_glob(glob_list.we_wordv[i], word, word_length,
-							  max_length, pwordexp, ifs, ifs_white);
+				max_length, pwordexp, ifs /*, ifs_white*/);
 
 	/* Now tidy up */
   tidy_up:
@@ -787,6 +747,7 @@ parse_arith(char **word, size_t * word_length, size_t * max_length,
 static void attribute_noreturn
 exec_comm_child(char *comm, int *fildes, int showerr, int noexec)
 {
+	int fd;
 	const char *args[4] = { _PATH_BSHELL, "-c", comm, NULL };
 
 	/* Execute the command, or just check syntax? */
@@ -794,13 +755,14 @@ exec_comm_child(char *comm, int *fildes, int showerr, int noexec)
 		args[1] = "-nc";
 
 	/* Redirect output.  */
-	dup2(fildes[1], 1);
-	close(fildes[1]);
+	fd = fildes[1];
+	if (fd != 1) {
+		dup2(fd, 1);
+		close(fd);
+	}
 
 	/* Redirect stderr to /dev/null if we have to.  */
 	if (showerr == 0) {
-		int fd;
-
 		close(2);
 		fd = open(_PATH_DEVNULL, O_WRONLY);
 		if (fd >= 0 && fd != 2) {
@@ -812,7 +774,8 @@ exec_comm_child(char *comm, int *fildes, int showerr, int noexec)
 	/* Make sure the subshell doesn't field-split on our behalf. */
 	unsetenv("IFS");
 
-	close(fildes[0]);
+	if (fildes[0] != 1)
+		close(fildes[0]);
 	execve(_PATH_BSHELL, (char *const *) args, __environ);
 
 	/* Bad.  What now?  */

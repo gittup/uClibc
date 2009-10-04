@@ -115,23 +115,6 @@
 #include <bits/uClibc_uintmaxtostr.h>
 #include <bits/uClibc_va_copy.h>
 
-/* Experimentally off - libc_hidden_proto(memcpy) */
-/* Experimentally off - libc_hidden_proto(memset) */
-/* Experimentally off - libc_hidden_proto(strlen) */
-/* Experimentally off - libc_hidden_proto(strnlen) */
-/* libc_hidden_proto(__glibc_strerror_r) */
-/* libc_hidden_proto(fputs_unlocked) */
-/* libc_hidden_proto(abort) */
-#ifdef __UCLIBC_HAS_WCHAR__
-/* libc_hidden_proto(wcslen) */
-/* libc_hidden_proto(wcsnlen) */
-/* libc_hidden_proto(mbsrtowcs) */
-/* libc_hidden_proto(wcsrtombs) */
-/* libc_hidden_proto(btowc) */
-/* libc_hidden_proto(wcrtomb) */
-/* libc_hidden_proto(fputws) */
-#endif
-
 /* Some older or broken gcc toolchains define LONG_LONG_MAX but not
  * LLONG_MAX.  Since LLONG_MAX is part of the standard, that's what
  * we use.  So complain if we do not have it but should.
@@ -727,12 +710,6 @@ void attribute_hidden _ppfs_setargs(register ppfs_t *ppfs)
 #endif
 /**********************************************************************/
 #ifdef L__ppfs_parsespec
-
-#ifdef __UCLIBC_HAS_XLOCALE__
-/* libc_hidden_proto(__ctype_b_loc) */
-#elif defined __UCLIBC_HAS_CTYPE_TABLES__
-/* libc_hidden_proto(__ctype_b) */
-#endif
 
 /* Notes: argtype differs from glibc for the following:
  *         mine              glibc
@@ -1860,7 +1837,6 @@ static int _do_one_spec(FILE * __restrict stream,
 	return 0;
 }
 
-/* libc_hidden_proto(fprintf) */
 
 int VFPRINTF_internal (FILE * __restrict stream,
 			  const FMT_TYPE * __restrict format,

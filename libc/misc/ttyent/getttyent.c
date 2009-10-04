@@ -35,24 +35,7 @@
 #include <string.h>
 #include <stdlib.h>
 #ifdef __UCLIBC_HAS_THREADS__
-#include <pthread.h>
-#endif
-
-/* Experimentally off - libc_hidden_proto(strchr) */
-/* Experimentally off - libc_hidden_proto(strcmp) */
-/* Experimentally off - libc_hidden_proto(strncmp) */
-/* libc_hidden_proto(__fsetlocking) */
-/* libc_hidden_proto(rewind) */
-/* libc_hidden_proto(fgets_unlocked) */
-/* libc_hidden_proto(getc_unlocked) */
-/* libc_hidden_proto(__fgetc_unlocked) */
-/* libc_hidden_proto(fopen) */
-/* libc_hidden_proto(fclose) */
-/* libc_hidden_proto(abort) */
-#ifdef __UCLIBC_HAS_XLOCALE__
-/* libc_hidden_proto(__ctype_b_loc) */
-#elif defined __UCLIBC_HAS_CTYPE_TABLES__
-/* libc_hidden_proto(__ctype_b) */
+# include <pthread.h>
 #endif
 
 static char zapchar;
@@ -102,7 +85,6 @@ static char * value(register char *p)
     return ((p = strchr(p, '=')) ? ++p : NULL);
 }
 
-/* libc_hidden_proto(setttyent) */
 int setttyent(void)
 {
 
@@ -120,7 +102,6 @@ int setttyent(void)
 }
 libc_hidden_def(setttyent)
 
-/* libc_hidden_proto(getttyent) */
 struct ttyent * getttyent(void)
 {
     register int c;
@@ -201,7 +182,6 @@ struct ttyent * getttyent(void)
 }
 libc_hidden_def(getttyent)
 
-/* libc_hidden_proto(endttyent) */
 int endttyent(void)
 {
     int rval;

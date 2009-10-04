@@ -25,8 +25,8 @@
  * Returns a malloc'ed buffer containing the OS specific path
  * to the shm filename or NULL upon failure.
  */
-static __attribute_noinline__ char* get_shm_name(const char*name) __nonnull((1));
-static char* get_shm_name(const char*name)
+static __attribute_noinline__ char* get_shm_name(const char *name) __nonnull((1));
+static char* get_shm_name(const char *name)
 {
 	char *path;
 	int i;
@@ -57,7 +57,7 @@ static char* get_shm_name(const char*name)
 
 int shm_open(const char *name, int oflag, mode_t mode)
 {
-	int fd, old_errno;
+	int fd;
 	char *shm_name = get_shm_name(name);
 
 	/* Stripped multiple '/' from start; may have set errno properly */
@@ -71,32 +71,32 @@ int shm_open(const char *name, int oflag, mode_t mode)
 #else
 	fd = open(shm_name, oflag, mode);
 	if (fd >= 0) {
-		int fdflags = fcntl(fd, F_GETFD, 0);
-		if (fdflags >= 0)
-			fdflags = fcntl(fd, F_SETFD, fdflags | FD_CLOEXEC);
-		if (fdflags < 0) {
-			close(fd);
-			fd = -1;
-		}
+		fcntl(fd, F_SETFD, FD_CLOEXEC);
+		/* thus far, {G,S}ETFD only has this single flag,
+		 * and setting it never fails.
+		 *int fdflags = fcntl(fd, F_GETFD);
+		 *if (fdflags >= 0)
+		 *	fdflags = fcntl(fd, F_SETFD, fdflags | FD_CLOEXEC);
+		 *if (fdflags < 0) {
+		 *	close(fd);
+		 *	fd = -1;
+		 *}
+		 */
 	}
 #endif
-	old_errno = errno;
-	free(shm_name);
-	errno = old_errno;
+	free(shm_name); /* doesn't affect errno */
 	return fd;
 }
 
 int shm_unlink(const char *name)
 {
 	char *shm_name = get_shm_name(name);
-	int ret, old_errno;
+	int ret;
 
 	/* Stripped multiple '/' from start; may have set errno properly */
 	if (shm_name == NULL)
 		return -1;
 	ret = unlink(shm_name);
-	old_errno = errno;
-	free(shm_name);
-	errno = old_errno;
+	free(shm_name); /* doesn't affect errno */
 	return ret;
 }

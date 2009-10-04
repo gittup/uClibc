@@ -33,11 +33,13 @@
 # include <sys/mman.h>
 #endif
 
+#ifdef BUILDING_LINKAGE
 #include <link.h>
 /* makefile will include elf.h for us */
 
 #include "bswap.h"
 #include "dl-defs.h"
+#endif
 
 #ifdef DMALLOC
 #include <dmalloc.h>
@@ -70,6 +72,12 @@
 #endif
 #if !defined(UCLIBC_ENDIAN_HOST)
 # error "Unknown host byte order!"
+#endif
+
+#if defined __GNUC__ || defined __ICC
+# define attribute_noreturn __attribute__ ((__noreturn__))
+#else
+# define attribute_noreturn
 #endif
 
 #endif

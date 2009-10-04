@@ -29,10 +29,8 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <sys/statfs.h>
-//#include <sys/statvfs.h>
 
 extern __typeof(statfs) __libc_statfs;
-/* libc_hidden_proto(stat) */
 
 
 /* The Linux kernel headers mention this as a kind of generic value. */

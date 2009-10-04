@@ -35,17 +35,8 @@
 
 #include "netlinkaccess.h"
 
-/* Experimentally off - libc_hidden_proto(strncpy) */
-/* Experimentally off - libc_hidden_proto(strdup) */
-/* libc_hidden_proto(ioctl) */
-/* libc_hidden_proto(close) */
-#if __ASSUME_NETLINK_SUPPORT
-/* Experimentally off - libc_hidden_proto(strndup) */
-#endif
-
 extern int __opensock(void) attribute_hidden;
 
-/* libc_hidden_proto(if_nametoindex) */
 unsigned int
 if_nametoindex(const char* ifname)
 {
@@ -62,10 +53,11 @@ if_nametoindex(const char* ifname)
   strncpy (ifr.ifr_name, ifname, sizeof (ifr.ifr_name));
   if (ioctl (fd, SIOCGIFINDEX, &ifr) < 0)
     {
-      int saved_errno = errno;
+      /* close never fails here, fd is just a unconnected socket.
+       *int saved_errno = errno; */
       close(fd);
-      if (saved_errno == EINVAL)
-	__set_errno(ENOSYS);
+      /*if (saved_errno == EINVAL)
+       *  __set_errno(ENOSYS); */
       return 0;
     }
 
@@ -75,7 +67,6 @@ if_nametoindex(const char* ifname)
 }
 libc_hidden_def(if_nametoindex)
 
-/* libc_hidden_proto(if_freenameindex) */
 void
 if_freenameindex (struct if_nameindex *ifn)
 {
@@ -89,7 +80,6 @@ if_freenameindex (struct if_nameindex *ifn)
 }
 libc_hidden_def(if_freenameindex)
 
-/* libc_hidden_proto(if_nameindex) */
 #if !__ASSUME_NETLINK_SUPPORT
 struct if_nameindex *
 if_nameindex (void)

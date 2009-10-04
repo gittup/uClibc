@@ -11,12 +11,7 @@
 #include "_stdio.h"
 #include <stdarg.h>
 
-#ifdef __USE_OLD_VFPRINTF__
-/* libc_hidden_proto(vfprintf) */
-#endif
-/* libc_hidden_proto(fflush_unlocked) */
 
-/* libc_hidden_proto(vdprintf) */
 int vdprintf(int filedes, const char * __restrict format, va_list arg)
 {
 	FILE f;
@@ -45,10 +40,10 @@ int vdprintf(int filedes, const char * __restrict format, va_list arg)
 
 #ifdef __UCLIBC_HAS_WCHAR__
 	f.__ungot_width[0] = 0;
-#endif /* __UCLIBC_HAS_WCHAR__ */
+#endif
 #ifdef __STDIO_MBSTATE
 	__INIT_MBSTATE(&(f.__state));
-#endif /* __STDIO_MBSTATE */
+#endif
 
 /* _vfprintf_internal doesn't do any locking, locking init is here
  * only because of fflush_unlocked. TODO? */

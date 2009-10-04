@@ -39,17 +39,6 @@
 
 #include "netlinkaccess.h"
 
-/* libc_hidden_proto(socket) */
-/* libc_hidden_proto(close) */
-/* Experimentally off - libc_hidden_proto(time) */
-/* libc_hidden_proto(sendto) */
-/* libc_hidden_proto(recvmsg) */
-/* libc_hidden_proto(bind) */
-/* Experimentally off - libc_hidden_proto(memset) */
-/* Experimentally off - libc_hidden_proto(mempcpy) */
-/* libc_hidden_proto(getsockname) */
-/* libc_hidden_proto(fclose) */
-/* libc_hidden_proto(abort) */
 
 #ifndef __libc_use_alloca
 # define __libc_use_alloca(x) (x < __MAX_ALLOCA_CUTOFF)
@@ -81,7 +70,6 @@ void
 __netlink_free_handle (struct netlink_handle *h)
 {
   struct netlink_res *ptr;
-  int saved_errno = errno;
 
   ptr = h->nlm_list;
   while (ptr != NULL)
@@ -89,11 +77,9 @@ __netlink_free_handle (struct netlink_handle *h)
       struct netlink_res *tmpptr;
 
       tmpptr = ptr->next;
-      free (ptr);
+      free (ptr); /* doesn't affect errno */
       ptr = tmpptr;
     }
-
-  __set_errno (saved_errno);
 }
 
 

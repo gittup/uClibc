@@ -20,55 +20,49 @@
 #include <string.h>
 #include <utmp.h>
 
-/* Experimentally off - libc_hidden_proto(strcmp) */
-/* Experimentally off - libc_hidden_proto(strdup) */
-/* Experimentally off - libc_hidden_proto(strncmp) */
-/* libc_hidden_proto(read) */
-/* libc_hidden_proto(write) */
-/* libc_hidden_proto(open) */
-/* libc_hidden_proto(fcntl) */
-/* libc_hidden_proto(close) */
-/* libc_hidden_proto(lseek) */
-
 #include <bits/uClibc_mutex.h>
 __UCLIBC_MUTEX_STATIC(utmplock, PTHREAD_MUTEX_INITIALIZER);
-
 
 
 /* Some global crap */
 static int static_fd = -1;
 static struct utmp static_utmp;
 static const char default_file_name[] = _PATH_UTMP;
-static const char *static_ut_name = (const char *) default_file_name;
+static const char *static_ut_name = default_file_name;
 
 /* This function must be called with the LOCK held */
 static void __setutent(void)
 {
-    int ret;
-
-    if (static_fd == -1) {
-	if ((static_fd = open(static_ut_name, O_RDWR)) < 0) {
-	    if ((static_fd = open(static_ut_name, O_RDONLY)) < 0) {
-		goto bummer;
+    if (static_fd < 0) {
+#ifndef O_CLOEXEC
+# define O_CLOEXEC 0
+#endif
+	static_fd = open(static_ut_name, O_RDWR | O_CLOEXEC);
+	if (static_fd < 0) {
+	    static_fd = open(static_ut_name, O_RDONLY | O_CLOEXEC);
+	    if (static_fd < 0) {
+		return; /* static_fd remains < 0 */
 	    }
 	}
-	/* Make sure the file will be closed on exec()  */
-	ret = fcntl(static_fd, F_GETFD, 0);
-	if (ret >= 0) {
-	    ret = fcntl(static_fd, F_SETFD, ret | FD_CLOEXEC);
+	if (O_CLOEXEC == 0) {
+	    /* Make sure the file will be closed on exec()  */
+	    fcntl(static_fd, F_SETFD, FD_CLOEXEC);
+	    /* thus far, {G,S}ETFD only has this single flag,
+	     * and setting it never fails.
+	     *int ret = fcntl(static_fd, F_GETFD, 0);
+	     *if (ret >= 0) {
+	     *    ret = fcntl(static_fd, F_SETFD, ret | FD_CLOEXEC);
+	     *}
+	     *if (ret < 0) {
+	     *    static_fd = -1;
+	     *}
+             */
 	}
-	if (ret < 0) {
-bummer:
-	    static_fd = -1;
-	    close(static_fd);
-	    return;
-	}
+	return;
     }
     lseek(static_fd, 0, SEEK_SET);
-    return;
 }
 
-/* libc_hidden_proto(setutent) */
 void setutent(void)
 {
     __UCLIBC_MUTEX_LOCK(utmplock);
@@ -78,19 +72,18 @@ void setutent(void)
 libc_hidden_def(setutent)
 
 /* This function must be called with the LOCK held */
-static struct utmp *__getutent(int utmp_fd)
+static struct utmp *__getutent(void)
 {
     struct utmp *ret = NULL;
 
-    if (utmp_fd == -1) {
+    if (static_fd < 0) {
 	__setutent();
-    }
-    if (utmp_fd == -1) {
-	return NULL;
+	if (static_fd < 0) {
+	    return NULL;
+	}
     }
 
-    if (read(utmp_fd, (char *) &static_utmp, sizeof(struct utmp)) == sizeof(struct utmp))
-    {
+    if (read(static_fd, &static_utmp, sizeof(static_utmp)) == sizeof(static_utmp)) {
 	ret = &static_utmp;
     }
 
@@ -100,7 +93,7 @@ static struct utmp *__getutent(int utmp_fd)
 void endutent(void)
 {
     __UCLIBC_MUTEX_LOCK(utmplock);
-    if (static_fd != -1)
+    if (static_fd >= 0)
 	close(static_fd);
     static_fd = -1;
     __UCLIBC_MUTEX_UNLOCK(utmplock);
@@ -111,7 +104,7 @@ struct utmp *getutent(void)
     struct utmp *ret = NULL;
 
     __UCLIBC_MUTEX_LOCK(utmplock);
-    ret = __getutent(static_fd);
+    ret = __getutent();
     __UCLIBC_MUTEX_UNLOCK(utmplock);
     return ret;
 }
@@ -121,7 +114,7 @@ static struct utmp *__getutid(const struct utmp *utmp_entry)
 {
     struct utmp *lutmp;
 
-    while ((lutmp = __getutent(static_fd)) != NULL) {
+    while ((lutmp = __getutent()) != NULL) {
 		if (	(utmp_entry->ut_type == RUN_LVL ||
 				 utmp_entry->ut_type == BOOT_TIME ||
 				 utmp_entry->ut_type == NEW_TIME ||
@@ -143,7 +136,6 @@ static struct utmp *__getutid(const struct utmp *utmp_entry)
     return NULL;
 }
 
-/* libc_hidden_proto(getutid) */
 struct utmp *getutid(const struct utmp *utmp_entry)
 {
     struct utmp *ret = NULL;
@@ -160,7 +152,7 @@ struct utmp *getutline(const struct utmp *utmp_entry)
     struct utmp *lutmp = NULL;
 
     __UCLIBC_MUTEX_LOCK(utmplock);
-    while ((lutmp = __getutent(static_fd)) != NULL) {
+    while ((lutmp = __getutent()) != NULL) {
 	if ((lutmp->ut_type == USER_PROCESS || lutmp->ut_type == LOGIN_PROCESS) &&
 		!strcmp(lutmp->ut_line, utmp_entry->ut_line)) {
 	    break;
@@ -170,7 +162,7 @@ struct utmp *getutline(const struct utmp *utmp_entry)
     return lutmp;
 }
 
-struct utmp *pututline (const struct utmp *utmp_entry)
+struct utmp *pututline(const struct utmp *utmp_entry)
 {
     __UCLIBC_MUTEX_LOCK(utmplock);
     /* Ignore the return value.  That way, if they've already positioned
@@ -188,7 +180,7 @@ struct utmp *pututline (const struct utmp *utmp_entry)
     return (struct utmp *)utmp_entry;
 }
 
-int utmpname (const char *new_ut_name)
+int utmpname(const char *new_ut_name)
 {
     __UCLIBC_MUTEX_LOCK(utmplock);
     if (new_ut_name != NULL) {
@@ -202,9 +194,10 @@ int utmpname (const char *new_ut_name)
 	}
     }
 
-    if (static_fd != -1)
+    if (static_fd >= 0) {
 	close(static_fd);
-    static_fd = -1;
+	static_fd = -1;
+    }
     __UCLIBC_MUTEX_UNLOCK(utmplock);
-    return 0;
+    return 0; /* or maybe return -(static_ut_name != new_ut_name)? */
 }

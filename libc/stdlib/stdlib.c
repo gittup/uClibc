@@ -197,7 +197,6 @@ _stdlib_wcsto_ll(register const wchar_t * __restrict str,
 /**********************************************************************/
 #ifdef L_atof
 
-/* libc_hidden_proto(strtod) */
 
 double atof(const char *nptr)
 {
@@ -269,9 +268,7 @@ strong_alias(llabs,imaxabs)
 
 #if INT_MAX < LONG_MAX
 
-/* libc_hidden_proto(strtol) */
 
-/* libc_hidden_proto(atoi) */
 int atoi(const char *nptr)
 {
 	return (int) strtol(nptr, (char **) NULL, 10);
@@ -284,9 +281,7 @@ libc_hidden_def(atoi)
 /**********************************************************************/
 #ifdef L_atol
 
-/* libc_hidden_proto(strtol) */
 
-/* libc_hidden_proto(atol) */
 long atol(const char *nptr)
 {
 	return strtol(nptr, (char **) NULL, 10);
@@ -313,7 +308,6 @@ strong_alias(atol,atoll)
 
 #if defined(ULLONG_MAX) && (LLONG_MAX > LONG_MAX)
 
-/* libc_hidden_proto(strtoll) */
 
 long long atoll(const char *nptr)
 {
@@ -468,10 +462,8 @@ strong_alias(strtoull,strtouq)
 #define Wuchar __uwchar_t
 #ifdef __UCLIBC_DO_XLOCALE
 #define ISSPACE(C) iswspace_l((C), locale_arg)
-/* libc_hidden_proto(iswspace_l) */
 #else
 #define ISSPACE(C) iswspace((C))
-/* libc_hidden_proto(iswspace) */
 #endif
 
 #else  /* defined(L__stdlib_wcsto_l) || defined(L__stdlib_wcsto_l_l) */
@@ -480,10 +472,8 @@ strong_alias(strtoull,strtouq)
 #define Wuchar unsigned char
 #ifdef __UCLIBC_DO_XLOCALE
 #define ISSPACE(C) isspace_l((C), locale_arg)
-/* libc_hidden_proto(isspace_l) */
 #else
 #define ISSPACE(C) isspace((C))
-/* libc_hidden_proto(isspace) */
 #endif
 
 #endif /* defined(L__stdlib_wcsto_l) || defined(L__stdlib_wcsto_l_l) */
@@ -502,12 +492,6 @@ unsigned long attribute_hidden _stdlib_strto_l(register const Wchar * __restrict
 
 /* This is the main work fuction which handles both strtol (sflag = 1) and
  * strtoul (sflag = 0). */
-
-#ifdef __UCLIBC_HAS_XLOCALE__
-/* libc_hidden_proto(__ctype_b_loc) */
-#elif defined __UCLIBC_HAS_CTYPE_TABLES__
-/* libc_hidden_proto(__ctype_b) */
-#endif
 
 unsigned long attribute_hidden __XL_NPP(_stdlib_strto_l)(register const Wchar * __restrict str,
 										Wchar ** __restrict endptr, int base,
@@ -623,10 +607,8 @@ unsigned long attribute_hidden __XL_NPP(_stdlib_strto_l)(register const Wchar * 
 #define Wuchar __uwchar_t
 #ifdef __UCLIBC_DO_XLOCALE
 #define ISSPACE(C) iswspace_l((C), locale_arg)
-/* libc_hidden_proto(iswspace_l) */
 #else
 #define ISSPACE(C) iswspace((C))
-/* libc_hidden_proto(iswspace) */
 #endif
 
 #else  /* defined(L__stdlib_wcsto_ll) || defined(L__stdlib_wcsto_ll_l) */
@@ -635,10 +617,8 @@ unsigned long attribute_hidden __XL_NPP(_stdlib_strto_l)(register const Wchar * 
 #define Wuchar unsigned char
 #ifdef __UCLIBC_DO_XLOCALE
 #define ISSPACE(C) isspace_l((C), locale_arg)
-/* libc_hidden_proto(isspace_l) */
 #else
 #define ISSPACE(C) isspace((C))
-/* libc_hidden_proto(isspace) */
 #endif
 
 #endif /* defined(L__stdlib_wcsto_ll) || defined(L__stdlib_wcsto_ll_l) */
@@ -655,9 +635,6 @@ unsigned long long attribute_hidden _stdlib_strto_ll(register const Wchar * __re
 
 #else  /* defined(__UCLIBC_HAS_XLOCALE__) && !defined(__UCLIBC_DO_XLOCALE) */
 
-#if !defined __UCLIBC_HAS_XLOCALE__ && defined __UCLIBC_HAS_CTYPE_TABLES__
-/* libc_hidden_proto(__ctype_b) */
-#endif
 /* This is the main work fuction which handles both strtoll (sflag = 1) and
  * strtoull (sflag = 0). */
 
@@ -771,7 +748,6 @@ unsigned long long attribute_hidden __XL_NPP(_stdlib_strto_ll)(register const Wc
 /**********************************************************************/
 /* Made _Exit() an alias for _exit(), as per C99. */
 /*  #ifdef L__Exit */
-/*  libc_hidden_proto(_exit) */
 /*  void _Exit(int status) */
 /*  { */
 /*  	_exit(status); */
@@ -819,7 +795,6 @@ void *bsearch(const void *key, const void *base, size_t /* nmemb */ high,
  * calculation, as well as to reduce the generated code size with
  * bcc and gcc. */
 
-/* libc_hidden_proto(qsort) */
 void qsort(void  *base,
            size_t nel,
            size_t width,
@@ -915,7 +890,6 @@ void ssort(void  *base,
 /**********************************************************************/
 #ifdef L__stdlib_mb_cur_max
 
-/* libc_hidden_proto(_stdlib_mb_cur_max) */
 size_t _stdlib_mb_cur_max(void)
 {
 #ifdef __CTYPE_HAS_UTF_8_LOCALES
@@ -959,7 +933,6 @@ static __always_inline int is_stateful(unsigned char encoding)
 /**********************************************************************/
 #ifdef L_mblen
 
-/* libc_hidden_proto(mbrlen) */
 
 int mblen(register const char *s, size_t n)
 {
@@ -991,7 +964,6 @@ int mblen(register const char *s, size_t n)
 /**********************************************************************/
 #ifdef L_mbtowc
 
-/* libc_hidden_proto(mbrtowc) */
 
 int mbtowc(wchar_t *__restrict pwc, register const char *__restrict s, size_t n)
 {
@@ -1026,7 +998,6 @@ int mbtowc(wchar_t *__restrict pwc, register const char *__restrict s, size_t n)
 
 /* Note: We completely ignore state in all currently supported conversions. */
 
-/* libc_hidden_proto(wcrtomb) */
 
 int wctomb(register char *__restrict s, wchar_t swc)
 {
@@ -1045,7 +1016,6 @@ int wctomb(register char *__restrict s, wchar_t swc)
 /**********************************************************************/
 #ifdef L_mbstowcs
 
-/* libc_hidden_proto(mbsrtowcs) */
 
 size_t mbstowcs(wchar_t * __restrict pwcs, const char * __restrict s, size_t n)
 {
@@ -1062,7 +1032,6 @@ size_t mbstowcs(wchar_t * __restrict pwcs, const char * __restrict s, size_t n)
 
 /* Note: We completely ignore state in all currently supported conversions. */
 
-/* libc_hidden_proto(wcsrtombs) */
 
 size_t wcstombs(char * __restrict s, const wchar_t * __restrict pwcs, size_t n)
 {

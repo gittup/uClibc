@@ -34,10 +34,17 @@
 #include <regex.h>
 #endif
 
-/* libc_hidden_proto(sysconf) */
+#ifdef HAVE_LINUX_CPUMASK_H
+# include <linux/cpumask.h>
+#endif
+#ifndef num_present_cpus
+# define num_present_cpus() (1)
+#endif
+#ifndef num_online_cpus
+# define num_online_cpus() (1)
+#endif
 
-/* libc_hidden_proto(getpagesize) */
-/* libc_hidden_proto(getdtablesize) */
+
 
 #ifndef __UCLIBC_CLK_TCK_CONST
 #error __UCLIBC_CLK_TCK_CONST not defined!
@@ -658,20 +665,10 @@ long int sysconf(int name)
 #endif
 
     case _SC_NPROCESSORS_CONF:
-#if 0
-      RETURN_FUNCTION(get_nprocs_conf());
-#else
-      /* this is a hack.  for now always claim we have exactly one cpu */
-      return 1;
-#endif
+      RETURN_FUNCTION(num_present_cpus());
 
     case _SC_NPROCESSORS_ONLN:
-#if 0
-      RETURN_FUNCTION(get_nprocs());
-#else
-      /* this is a hack.  for now always claim we have exactly one cpu */
-      return 1;
-#endif
+      RETURN_FUNCTION(num_online_cpus());
 
     case _SC_PHYS_PAGES:
 #if 0

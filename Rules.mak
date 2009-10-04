@@ -63,14 +63,6 @@ STRIP_FLAGS ?= -x -R .note -R .comment
 # Select the compiler needed to build binaries for your development system
 HOSTCC     = gcc
 BUILD_CFLAGS = -Os -Wall
-export ARCH := $(shell uname -m | $(SED) -e s/i.86/i386/ \
-				  -e s/sun.*/sparc/ -e s/sparc.*/sparc/ \
-				  -e s/arm.*/arm/ -e s/sa110/arm/ \
-				  -e s/sh.*/sh/ \
-				  -e s/s390x/s390/ -e s/parisc.*/hppa/ \
-				  -e s/ppc.*/powerpc/ -e s/mips.*/mips/ \
-				  -e s/xtensa.*/xtensa/ )
-
 
 #---------------------------------------------------------
 # Nothing beyond this point should ever be touched by mere
@@ -82,10 +74,21 @@ export ARCH := $(shell uname -m | $(SED) -e s/i.86/i386/ \
 ifeq ($(filter $(noconfig_targets),$(MAKECMDGOALS)),)
 -include $(top_builddir).config
 endif
+TARGET_ARCH:=$(strip $(subst ",, $(strip $(TARGET_ARCH))))
+ifeq ($(TARGET_ARCH),)
+ARCH ?= $(shell uname -m | $(SED) -e s/i.86/i386/ \
+				  -e s/sun.*/sparc/ -e s/sparc.*/sparc/ \
+				  -e s/arm.*/arm/ -e s/sa110/arm/ \
+				  -e s/sh.*/sh/ \
+				  -e s/s390x/s390/ -e s/parisc.*/hppa/ \
+				  -e s/ppc.*/powerpc/ -e s/mips.*/mips/ \
+				  -e s/xtensa.*/xtensa/ )
+else
+ARCH = $(TARGET_ARCH)
+endif
+export ARCH
 
 # Make certain these contain a final "/", but no "//"s.
-TARGET_ARCH:=$(shell grep -s '^TARGET_ARCH' $(top_builddir)/.config | $(SED) -e 's/^TARGET_ARCH=//' -e 's/"//g')
-TARGET_ARCH:=$(strip $(subst ",, $(strip $(TARGET_ARCH))))
 TARGET_SUBARCH:=$(shell grep -s '^TARGET_SUBARCH' $(top_builddir)/.config | $(SED) -e 's/^TARGET_SUBARCH=//' -e 's/"//g')
 TARGET_SUBARCH:=$(strip $(subst ",, $(strip $(TARGET_SUBARCH))))
 RUNTIME_PREFIX:=$(strip $(subst //,/, $(subst ,/, $(subst ",, $(strip $(RUNTIME_PREFIX))))))
@@ -528,9 +531,9 @@ endif
 NOSTDLIB_CFLAGS:=$(call check_gcc,-nostdlib,)
 
 # Collect all CFLAGS components
-CFLAGS := -include $(top_builddir)include/libc-symbols.h \
+CFLAGS := -include $(top_srcdir)include/libc-symbols.h \
 	$(XWARNINGS) $(CPU_CFLAGS) $(SSP_CFLAGS) \
-	-nostdinc -I$(top_builddir)include -I. \
+	-nostdinc -I$(top_builddir)include -I$(top_srcdir)include -I. \
 	-I$(top_srcdir)libc/sysdeps/linux/$(TARGET_ARCH)
 ifneq ($(strip $(UCLIBC_EXTRA_CFLAGS)),"")
 CFLAGS += $(subst ",, $(UCLIBC_EXTRA_CFLAGS))
@@ -607,16 +610,16 @@ else
 	PTNAME := linuxthreads
 endif
 endif
-PTDIR := $(top_builddir)libpthread/$(PTNAME)
+PTDIR := libpthread/$(PTNAME)
 # set up system dependencies include dirs (NOTE: order matters!)
 ifeq ($(UCLIBC_HAS_THREADS_NATIVE),y)
-PTINC:=	-I$(PTDIR)						\
-	-I$(PTDIR)/sysdeps/unix/sysv/linux/$(TARGET_ARCH)	\
-	-I$(PTDIR)/sysdeps/$(TARGET_ARCH)			\
-	-I$(PTDIR)/sysdeps/unix/sysv/linux			\
-	-I$(PTDIR)/sysdeps/pthread				\
-	-I$(PTDIR)/sysdeps/pthread/bits				\
-	-I$(PTDIR)/sysdeps/generic				\
+PTINC:=	-I$(top_srcdir)$(PTDIR)						\
+	-I$(top_srcdir)$(PTDIR)/sysdeps/unix/sysv/linux/$(TARGET_ARCH)	\
+	-I$(top_srcdir)$(PTDIR)/sysdeps/$(TARGET_ARCH)			\
+	-I$(top_srcdir)$(PTDIR)/sysdeps/unix/sysv/linux			\
+	-I$(top_srcdir)$(PTDIR)/sysdeps/pthread				\
+	-I$(top_srcdir)$(PTDIR)/sysdeps/pthread/bits				\
+	-I$(top_srcdir)$(PTDIR)/sysdeps/generic				\
 	-I$(top_srcdir)ldso/ldso/$(TARGET_ARCH)			\
 	-I$(top_srcdir)ldso/include
 #
@@ -638,12 +641,12 @@ gcc_tls_test_fail:
 endif
 else
 PTINC := \
-	-I$(PTDIR)/sysdeps/unix/sysv/linux/$(TARGET_ARCH) \
-	-I$(PTDIR)/sysdeps/$(TARGET_ARCH) \
-	-I$(PTDIR)/sysdeps/unix/sysv/linux \
-	-I$(PTDIR)/sysdeps/pthread \
-	-I$(PTDIR) \
-	-I$(top_builddir)libpthread
+	-I$(top_srcdir)$(PTDIR)/sysdeps/unix/sysv/linux/$(TARGET_ARCH) \
+	-I$(top_srcdir)$(PTDIR)/sysdeps/$(TARGET_ARCH) \
+	-I$(top_srcdir)$(PTDIR)/sysdeps/unix/sysv/linux \
+	-I$(top_srcdir)$(PTDIR)/sysdeps/pthread \
+	-I$(top_srcdir)$(PTDIR) \
+	-I$(top_srcdir)libpthread
 endif
 CFLAGS+=$(PTINC)
 else

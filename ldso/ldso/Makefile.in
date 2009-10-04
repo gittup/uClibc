@@ -5,6 +5,8 @@
 # Licensed under the LGPL v2.1, see the file COPYING.LIB in this tarball.
 #
 
+subdirs += ldso/ldso/$(TARGET_ARCH)
+
 CFLAGS-ldso := -DNOT_IN_libc -DIS_IN_rtld $(SSP_DISABLE_FLAGS)
 
 # This stuff will not work with -fomit-frame-pointer
@@ -12,6 +14,17 @@ CFLAGS-ldso += -fno-omit-frame-pointer
 
 CFLAGS-ldso += -I$(top_srcdir)ldso/ldso/$(TARGET_ARCH) -I$(top_srcdir)ldso/include -I$(top_srcdir)ldso/ldso
 CFLAGS-ldso += -DUCLIBC_RUNTIME_PREFIX=\"$(RUNTIME_PREFIX)\" -DUCLIBC_LDSO=\"$(UCLIBC_LDSO)\"
+
+ifeq ($(DODEBUG),y)
+# Not really much point in including debugging info, since gdb
+# can't really debug ldso, since gdb requires help from ldso to
+# debug things....
+# On arm, gcc-4.3.x onwards -Os emits calls to libgcc, which calls _div0,
+# which tries to call raise(). And raise comes from libc so a catch 22.
+# Using -O2 instead. We could have use -fno-early-inlining with -Os too.
+
+CFLAGS-ldso += -O2 -g
+endif
 
 CFLAGS-ldso/ldso/$(TARGET_ARCH)/ := $(CFLAGS-ldso)
 

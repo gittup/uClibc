@@ -27,6 +27,7 @@ obj-y += getnameinfo.c
 obj-y += gethostbyaddr_r.c gethostbyname_r.c gethostbyname2_r.c gethostent_r.c
 obj-y += gethostbyaddr.c gethostbyname.c gethostbyname2.c gethostent.c
 obj-y += res_init.c res_query.c res_comp.c ns_name.c
+obj-y += _res_state.c
 endif
 
 # multi source socketcalls.c
