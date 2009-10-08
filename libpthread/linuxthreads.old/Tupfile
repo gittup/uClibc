@@ -1,12 +1,36 @@
 include_rules
 
-obj-y += libc_pthread_init.c
-obj-y += pthread.c
+sobj-y += libc_pthread_init.c
+sobj-y += pthread.c
+
+obj-y += attr.c
+obj-y += cancel.c
+obj-y += condvar.c
+obj-y += errno.c
+obj-y += events.c
+obj-y += join.c
+obj-y += lockfile.c
+obj-y += manager.c
+obj-y += mutex.c
+obj-y += oldsemaphore.c
+obj-y += pt-machine.c
+obj-y += ptfork.c
+obj-y += ptlongjmp.c
+obj-y += rwlock.c
+obj-y += semaphore.c
+#obj-y += signals.c
+obj-y += specific.c
+obj-y += spinlock.c
+obj-y += wrapsyscall.c
 
 CFLAGS += $(UCLIBC_LINUX_INCLUDES)
+CFLAGS += -DNOT_IN_libc
 
-: foreach $(obj-y) |> !cc_proper |> %B.o
+: foreach $(obj-y) |> !cc_proper |> %B.o {objs}
+: foreach $(sobj-y) |> !cc_proper |> %B.o
 
 CFLAGS += -DSHARED
-obj-y += forward.c
-: foreach $(obj-y) |> !cc_proper |> %B.oS
+sobj-y += forward.c
+: foreach $(sobj-y) |> !cc_proper |> %B.oS
+
+: {objs} pthread.oS |> !ar |> libpthread.a
