@@ -22,6 +22,7 @@ srcs += k_rem_pio2.c
 srcs += k_sin.c
 srcs += k_tan.c
 srcs += s_atan.c
+srcs += s_cbrt.c
 srcs += s_ceil.c
 srcs += s_copysign.c
 srcs += s_cos.c
@@ -30,6 +31,7 @@ srcs += s_fabs.c
 srcs += s_finite.c
 srcs += s_floor.c
 srcs += s_frexp.c
+srcs += s_isnan.c
 srcs += s_ldexp.c
 srcs += s_modf.c
 srcs += s_scalbn.c
@@ -43,6 +45,8 @@ CFLAGS_float_wrappers.c = -DL_sqrtf
 : foreach float_wrappers.c |> !cc_proper |> sqrtf.o
 CFLAGS_float_wrappers.c = -DL_rintf
 : foreach float_wrappers.c |> !cc_proper |> rintf.o
+CFLAGS_float_wrappers.c = -DL_powf
+: foreach float_wrappers.c |> !cc_proper |> powf.o
 
 : foreach $(srcs) |> !cc_proper |> %B.o
 : *.o |> !ar |> libm.a
