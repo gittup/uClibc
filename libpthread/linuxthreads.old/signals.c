@@ -236,6 +236,8 @@ int sigwait(const sigset_t * set, int * sig)
 
 /* Redefine raise() to send signal to calling thread only,
    as per POSIX 1003.1c */
+#if 0
+/* MARF: conflicts with raise.c in libc.a */
 libpthread_hidden_proto(raise)
 int raise (int sig)
 {
@@ -248,3 +250,4 @@ int raise (int sig)
   }
 }
 libpthread_hidden_def(raise)
+#endif
