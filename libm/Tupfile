@@ -40,6 +40,8 @@ srcs += s_tan.c
 srcs += s_tanh.c
 srcs += s_lrint.c
 srcs += s_rint.c
+srcs += s_isinff.c
+srcs += s_lround.c
 
 CFLAGS_float_wrappers.c = -DL_sqrtf
 : foreach float_wrappers.c |> !cc_proper |> sqrtf.o
@@ -47,6 +49,12 @@ CFLAGS_float_wrappers.c = -DL_rintf
 : foreach float_wrappers.c |> !cc_proper |> rintf.o
 CFLAGS_float_wrappers.c = -DL_powf
 : foreach float_wrappers.c |> !cc_proper |> powf.o
+CFLAGS_float_wrappers.c = -DL_cbrtf
+: foreach float_wrappers.c |> !cc_proper |> cbrtf.o
+CFLAGS_float_wrappers.c = -DL_lroundf
+: foreach float_wrappers.c |> !cc_proper |> lroundf.o
+CFLAGS_float_wrappers.c = -DL_floorf
+: foreach float_wrappers.c |> !cc_proper |> floorf.o
 
 : foreach $(srcs) |> !cc_proper |> %B.o
 : *.o |> !ar |> libm.a
