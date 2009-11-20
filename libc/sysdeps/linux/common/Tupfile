@@ -182,6 +182,7 @@ obj-y += sigprocmask.c
 obj-y += sigqueue.c
 obj-y += sigsuspend.c
 obj-y += splice.c
+obj-y += ssp.c
 obj-y += stat.c
 obj-y += stat64.c
 obj-y += statfs.c
