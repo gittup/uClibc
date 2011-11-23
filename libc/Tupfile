@@ -40,7 +40,7 @@ shared-y += ../libpthread/linuxthreads.old/libc_pthread_init.oS
 shared-y += misc/elf/dl-iterate-phdr.oS
 shared-y += misc/internals/__uClibc_main.oS
 
-!ar_libc = |> ^ AR %o^ rm -f %o; ar crs %o %f && strip -x -R .note -R .comment %o |>
+!ar_libc = |> ^ AR %o^ ar crs %o %f && strip -x -R .note -R .comment %o |>
 : $(obj-y) $(static-y) |> !ar_libc |> libc.a
 : $(obj-y) $(shared-y) |> !ar_libc |> libc_so.a
 : stdlib/atexit.os |> !ar_libc |> uclibc_nonshared.a

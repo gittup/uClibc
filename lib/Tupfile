@@ -7,7 +7,7 @@ copy_files += ../libc/crti.o
 copy_files += ../libc/crtn.o
 copy_files += ../libc/libc.a
 copy_files += ../libc/uclibc_nonshared.a
-: foreach $(copy_files) |> ^ CP %o^ rm -f %o; cp %f %o |> %b
+: foreach $(copy_files) |> ^ CP %o^ cp %f %o |> %b
 
 LDEXTRA_FLAGS = -Wl,-e,_start
 LDEXTRA_FLAGS += -Wl,-z,now
