@@ -41,7 +41,7 @@ shared-y += misc/elf/dl-iterate-phdr.oS
 shared-y += misc/internals/__uClibc_main.oS
 
 !ar_libc = |> ^ AR %o^ ar crs %o %f && strip -x -R .note -R .comment %o |>
-: $(obj-y) $(static-y) |> !ar_libc |> libc.a
+: $(obj-y) $(static-y) |> !ar_libc |> libc.a | $(GITTUP_ROOT)/<compiler_files>
 : $(obj-y) $(shared-y) |> !ar_libc |> libc_so.a
 : stdlib/atexit.os |> !ar_libc |> uclibc_nonshared.a
 : |> ^ GEN %o^ (echo "#include <features.h>"; echo "const char __dl_ldso__[] attribute_hidden __attribute__ ((weak)) __attribute__ ((section (\".interp\"))) =\"""/usr/i386-linux-uclibc/lib"/ld-uClibc.so.0"\";") > %o |> interp.c
@@ -57,4 +57,4 @@ CFLAGS_S += -D__ASSEMBLER__ -Wa,--noexecstack
 : foreach $(crt-y) interp.c |> !cc_proper |> %B.otmp {crts}
 CFLAGS_sysdeps/linux/i386/crt1.S += -fPIE
 : foreach sysdeps/linux/i386/crt1.S |> !cc_proper |> Scrt1.otmp {crts}
-: foreach {crts} |> ^ STRIP %o^ strip -x -R .note -R .comment %f -o %o |> %B.o
+: foreach {crts} |> ^ STRIP %o^ strip -x -R .note -R .comment %f -o %o |> %B.o | $(GITTUP_ROOT)/<compiler_files>
